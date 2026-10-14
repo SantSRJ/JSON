@@ -1,0 +1,1947 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clase 12: Archivos JSON | Guía pedagógica</title>
+<style>
+:root{
+  --bg1:#f8fafc;--bg2:#e2e8f0;--card:#ffffff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;
+  --blue:#3b82f6;--green:#10b981;--orange:#f59e0b;--purple:#8b5cf6;--red:#ef4444;
+  --t-blue:#eff6ff;--t-green:#ecfdf5;--t-orange:#fffbeb;--t-purple:#f5f3ff;--t-red:#fef2f2;
+  --code:#1e293b;--code-ink:#e2e8f0;--shadow:0 1px 3px rgba(15,23,42,.08),0 4px 14px rgba(15,23,42,.05);
+  --docente:#f0f9ff;--docente-b:#0ea5e9;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg1:#0f172a;--bg2:#111c33;--card:#172036;--ink:#e2e8f0;--muted:#94a3b8;--line:#26324a;
+  --t-blue:#172a4a;--t-green:#0f2f2a;--t-orange:#33280f;--t-purple:#261f45;--t-red:#3a1a1f;
+  --code:#0b1222;--code-ink:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.4);--docente:#0c2534;
+}}
+:root[data-theme="dark"]{
+  --bg1:#0f172a;--bg2:#111c33;--card:#172036;--ink:#e2e8f0;--muted:#94a3b8;--line:#26324a;
+  --t-blue:#172a4a;--t-green:#0f2f2a;--t-orange:#33280f;--t-purple:#261f45;--t-red:#3a1a1f;
+  --code:#0b1222;--code-ink:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.4);--docente:#0c2534;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(135deg,var(--bg1),var(--bg2)) fixed;background-color:var(--bg1);line-height:1.55;font-size:16px}
+code,pre,textarea{font-family:"Cascadia Code","JetBrains Mono",Consolas,"Fira Code",ui-monospace,monospace}
+p code,li code,td code,h3 code,.tile code,.alerta code,button code,small code{background:rgba(59,130,246,.12);color:inherit;padding:.05em .35em;border-radius:5px;font-size:.88em}
+a{color:var(--blue)}
+.c-blue{color:var(--blue)}.c-green{color:var(--green)}.c-orange{color:var(--orange)}.c-purple{color:var(--purple)}.c-red{color:var(--red)}
+.muted{color:var(--muted);font-size:.92rem}
+
+/* layout */
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;max-width:1440px;margin:0 auto;padding:24px 24px 0}
+aside.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto}
+main{min-width:0}
+@media (max-width:980px){.layout{grid-template-columns:minmax(0,1fr);padding:14px 14px 0}aside.side{position:static;max-height:none}}
+
+/* side */
+.side-box{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.side-box h4{margin:0 0 10px;font-size:.95rem;display:flex;gap:8px;align-items:center}
+.reloj{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.reloj small{font-size:.9rem;color:var(--muted);font-weight:500}
+.barra{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin:8px 0 12px}
+.barra>span{display:block;height:100%;width:0;background:var(--blue);transition:width .4s}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.agenda{list-style:none;margin:0;padding:0}
+.agenda a{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:9px;text-decoration:none;color:var(--ink);font-size:.92rem;border-left:3px solid transparent}
+.agenda a:hover{background:var(--t-blue)}
+.agenda a span:last-child{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.85rem;white-space:nowrap}
+.agenda a.activo{background:var(--t-blue);border-left-color:var(--blue);font-weight:600}
+.agenda a.hecho{color:var(--muted)}
+.modo{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.92rem}
+.switch{position:relative;width:44px;height:24px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch span{position:absolute;inset:0;background:var(--line);border-radius:20px;cursor:pointer;transition:.2s}
+.switch span::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.switch input:checked+span{background:var(--blue)}
+.switch input:checked+span::before{transform:translateX(20px)}
+.switch input:focus-visible+span{outline:2px solid var(--blue);outline-offset:2px}
+.py-estado{font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:10px}
+.py-estado .dot{width:8px;height:8px;border-radius:50%;background:var(--orange)}
+.py-estado.listo .dot{background:var(--green)}
+
+/* buttons */
+button{font:inherit;cursor:pointer}
+.btn,.btn-run,.btn-sec{border:0;border-radius:8px;padding:6px 12px;font-size:.88rem;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.btn{background:var(--t-blue);color:var(--blue)}
+.btn-run{background:var(--green);color:#fff}
+.btn-run:disabled{opacity:.6;cursor:wait}
+.btn-sec{background:transparent;color:var(--muted);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* hero */
+.hero{text-align:center;padding:34px 10px 26px;position:relative}
+.hero h1{font-size:clamp(2.2rem,5vw,3.6rem);margin:0;line-height:1.1;display:inline-flex;gap:16px;align-items:center;letter-spacing:-.01em}
+.hero h1 i{color:var(--blue)}
+.hero p{color:var(--muted);font-size:1.25rem;margin:10px 0 0}
+.hero .pill{margin-top:14px}
+
+/* sections */
+.seccion{margin:0 0 46px}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.sec-tit{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sec-tit>i{color:var(--blue);font-size:1.5rem;align-self:center}
+.sec-tit h2{margin:0;font-size:1.6rem;line-height:1.2}
+.sec-sub{color:var(--muted);font-size:.98rem}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--t-blue);color:var(--blue);border-radius:20px;padding:4px 12px;font-size:.85rem;font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.subtema{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-size:1.15rem}
+.subnum{background:var(--blue);color:#fff;border-radius:8px;padding:1px 9px;font-size:.9rem}
+.submin{margin-left:auto;color:var(--muted);font-size:.85rem;font-weight:500}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.col>*+*{margin-top:14px}
+@media (max-width:1180px){.row2{grid-template-columns:minmax(0,1fr)}}
+
+.card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;border:1px solid var(--line)}
+.card-tit{margin:0 0 10px;font-size:1.05rem;display:flex;gap:9px;align-items:center}
+.card p{margin:.4em 0 .7em}
+.tiles{display:grid;gap:10px;margin:10px 0}
+.tiles.t2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tiles.t3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:600px){.tiles.t2,.tiles.t3{grid-template-columns:1fr}}
+.tile{border-radius:9px;padding:10px 12px;border-left:4px solid}
+.tile p{margin:2px 0 0;font-size:.9rem;color:var(--muted)}
+.tile-tit{font-weight:700;font-size:.95rem;display:flex;gap:7px;align-items:center}
+.t-blue{background:var(--t-blue);border-color:var(--blue)}.t-blue .tile-tit i{color:var(--blue)}
+.t-green{background:var(--t-green);border-color:var(--green)}.t-green .tile-tit i{color:var(--green)}
+.t-orange{background:var(--t-orange);border-color:var(--orange)}.t-orange .tile-tit i{color:var(--orange)}
+.t-purple{background:var(--t-purple);border-color:var(--purple)}.t-purple .tile-tit i{color:var(--purple)}
+.t-red{background:var(--t-red);border-color:var(--red)}.t-red .tile-tit i{color:var(--red)}
+
+/* code window */
+.win{background:var(--code);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.win-bar{display:flex;align-items:center;gap:7px;padding:10px 14px;color:#94a3b8;font-size:.82rem;border-bottom:1px solid rgba(148,163,184,.12)}
+.win-bar .d{width:11px;height:11px;border-radius:50%}
+.win-bar .d:nth-child(1){background:#ef4444}.win-bar .d:nth-child(2){background:#f59e0b}.win-bar .d:nth-child(3){background:#10b981}
+.win-bar .titulo{margin-left:8px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-bar button{background:rgba(148,163,184,.14);color:#cbd5e1;border:0;border-radius:6px;padding:3px 9px;font-size:.78rem;font-weight:600}
+.win-bar button.run{background:#10b981;color:#fff}
+.win pre.py,.win textarea{margin:0;padding:14px 16px;color:var(--code-ink);font-size:.86rem;line-height:1.6;overflow-x:auto;white-space:pre;tab-size:4}
+.win textarea,.editor{width:100%;min-height:160px;border:0;resize:vertical;background:#0f172a;color:#e2e8f0;display:block;font-size:.86rem;line-height:1.6;padding:14px 16px;white-space:pre;overflow:auto}
+.consola{margin:0;padding:12px 16px;background:#020617;color:#cbd5e1;font-size:.84rem;white-space:pre-wrap;border-top:1px solid #1e293b;max-height:340px;overflow:auto}
+.consola .err{color:#fca5a5}
+.consola .ayuda{display:block;margin-top:8px;padding:8px 10px;border-radius:7px;background:rgba(245,158,11,.14);color:#fde68a;font-family:"Segoe UI",system-ui,sans-serif;white-space:normal}
+.consola .meta{color:#64748b}
+.tok-c{color:#64748b;font-style:italic}.tok-s{color:#34d399}.tok-n{color:#60a5fa}.tok-k{color:#c084fc}.tok-b{color:#38bdf8}.tok-m{color:#93c5fd}.tok-v{color:#fbbf24}
+
+/* alert + teacher */
+.alerta{border-radius:12px;border:1px solid rgba(239,68,68,.35);border-left:5px solid var(--red);background:var(--t-red);padding:12px 16px}
+.alerta-tit{font-weight:700;color:var(--red);display:flex;gap:8px;align-items:center;margin-bottom:4px}
+.alerta p{margin:.35em 0}.alerta ul{margin:.3em 0;padding-left:1.2em}
+.alerta .win{margin-top:10px}
+.docente{border-radius:12px;border:1px dashed var(--docente-b);background:var(--docente);padding:12px 16px}
+.docente-tit{font-weight:700;color:var(--docente-b);display:flex;gap:8px;align-items:center;margin-bottom:4px}
+.docente p{margin:.35em 0}
+body.alumno .docente{display:none}
+
+/* tables */
+.tabla-wrap{overflow-x:auto}
+.tabla{width:100%;border-collapse:collapse;font-size:.9rem}
+.tabla th{text-align:left;color:var(--muted);font-weight:600;border-bottom:2px solid var(--line);padding:7px 8px}
+.tabla td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
+.tabla .none{color:var(--red);font-weight:600}.tabla .val{color:var(--green);font-weight:600}
+span.none{color:var(--red);font-weight:600}
+.traza{font-variant-numeric:tabular-nums;margin:10px 0}
+.traza td,.traza th{text-align:center}
+
+/* comparar */
+.comparar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.comparar>div{border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;gap:5px}
+.comparar span{font-weight:700;font-size:.88rem}
+.comparar code{background:transparent!important;padding:0!important;font-size:.88rem}
+.comparar small{color:var(--muted)}
+.mal{background:var(--t-red)}.mal span{color:var(--red)}
+.bien{background:var(--t-green)}.bien span{color:var(--green)}
+.lista-ok{padding-left:1.2em;margin:.5em 0}.lista-ok li{margin:.25em 0}
+
+/* index guide */
+.idx-guia{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 12px}
+.idx{display:flex;flex-direction:column;align-items:center;gap:2px}
+.idx .v{border-radius:8px;padding:8px 14px;font-weight:700;border-left:0;color:#fff}
+.idx .t-blue{background:var(--blue)}.idx .t-green{background:var(--green)}.idx .t-orange{background:var(--orange)}.idx .t-purple{background:var(--purple)}
+.idx small{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.idx small.neg{color:var(--red)}
+
+/* chips */
+.chip-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:4px 11px;font-size:.84rem}
+.chip-btn.on{background:var(--t-blue);border-color:var(--blue);color:var(--blue);font-weight:600}
+.chip-btn.accion{border-color:var(--green);color:var(--green)}
+.chip-btn code{background:transparent!important;padding:0!important}
+
+/* alias sim */
+.alias{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:8px}
+.alias-ctrl{display:flex;gap:6px;flex-wrap:wrap}
+.alias-mem{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 6px;min-height:90px;align-items:flex-end}
+.obj{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.etqs{display:flex;gap:6px}
+.etq{background:var(--orange);color:#fff;font-weight:700;border-radius:6px;padding:1px 10px;font-family:"Cascadia Code",Consolas,monospace;position:relative}
+.etq::after{content:"↓";position:absolute;left:50%;transform:translateX(-50%);bottom:-19px;color:var(--muted);font-weight:400}
+.caja{display:flex;border:2px solid var(--blue);border-radius:9px;overflow:hidden;margin-top:12px}
+.caja span{padding:6px 12px;border-right:1px solid var(--line);font-family:"Cascadia Code",Consolas,monospace;background:var(--card)}
+.caja span:last-child{border-right:0}
+.caja span.nuevo{background:var(--t-green);color:var(--green);font-weight:700}
+.obj small{color:var(--muted);font-size:.78rem;font-family:"Cascadia Code",Consolas,monospace}
+.alias-msg{font-size:.92rem;margin:4px 0 0;min-height:2.6em}
+
+/* slicer */
+.slicer{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
+.slicer-in{display:flex;align-items:center;gap:3px;font-size:1.05rem;flex-wrap:wrap}
+.slicer-in code{background:transparent!important;font-weight:700}
+.slicer-in input{width:64px;padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:inherit;font-size:.95rem;text-align:center}
+.slicer-pres{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
+.slicer-celdas{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:12px 0 6px}
+.celda{width:54px;border:2px solid var(--line);border-radius:9px;text-align:center;padding:4px 0;position:relative;transition:.2s}
+.celda b{display:block;font-size:1rem}
+.celda small{display:block;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.celda.sel{border-color:var(--green);background:var(--t-green)}
+.celda .ord{position:absolute;top:-10px;right:-8px;background:var(--green);color:#fff;font-size:.7rem;border-radius:9px;padding:0 6px;font-weight:700}
+.slicer-res{text-align:center;font-family:"Cascadia Code",Consolas,monospace;font-size:.95rem}
+.slicer-res .err{color:var(--red)}
+
+/* ejercicios */
+.nivel-tit{display:flex;gap:10px;align-items:center;font-size:1.15rem;margin:30px 0 12px}
+.niveles{display:flex;gap:7px;flex-wrap:wrap}
+.ej-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.ej-grid.dios{grid-template-columns:1fr}
+.ej{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line);border-top:4px solid;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.n-basico{border-top-color:var(--green)}.n-intermedio{border-top-color:var(--orange)}.n-avanzado{border-top-color:var(--red)}.n-dios{border-top-color:var(--purple)}
+.ej-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ej-head h4{margin:0;font-size:1.02rem;flex:1;min-width:180px}
+.ej-id{font-weight:800;color:var(--muted);font-size:.85rem}
+.ej-enun p{margin:0}
+.badge{border-radius:20px;padding:3px 10px;font-size:.78rem;font-weight:700;display:inline-flex;gap:5px;align-items:center}
+.b-basico{background:var(--t-green);color:var(--green)}.b-intermedio{background:var(--t-orange);color:#d97706}.b-avanzado{background:var(--t-red);color:var(--red)}.b-dios{background:var(--t-purple);color:var(--purple)}
+.salida-esp{background:var(--t-blue);border-radius:9px;padding:8px 12px}
+.salida-esp span{font-size:.8rem;font-weight:700;color:var(--blue)}
+.salida-esp pre{margin:4px 0 0;font-size:.82rem;white-space:pre-wrap}
+.practica{border-radius:10px;overflow:hidden;background:var(--code)}
+.practica-bar{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;color:#94a3b8;font-size:.82rem;gap:8px;flex-wrap:wrap}
+.practica-btns{display:flex;gap:6px}
+.practica .btn-sec{color:#cbd5e1;border-color:#334155;padding:3px 9px;font-size:.8rem}
+.practica .btn-run{padding:3px 10px;font-size:.8rem}
+details{border:1px solid var(--line);border-radius:10px;padding:0 12px}
+details summary{cursor:pointer;padding:9px 0;font-weight:600;font-size:.92rem;display:flex;gap:7px;align-items:center;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";margin-left:auto;color:var(--muted);font-size:1.1rem}
+details[open] summary::after{content:"−"}
+details>div{padding:0 0 12px}
+details.pista summary{color:#d97706}
+details.solucion summary{color:var(--green)}
+details h5{margin:12px 0 4px;font-size:.95rem}
+.pasos{padding-left:1.3em;margin:.4em 0 .8em}.pasos li{margin:.3em 0}
+details .win{margin-top:8px}
+
+/* pausa */
+.pausa-in{display:flex;gap:18px;align-items:center;background:var(--card);border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.pausa-in i{font-size:2rem;color:var(--orange)}
+.pausa-in h2{margin:0;font-size:1.3rem}.pausa-in p{margin:2px 0 0;color:var(--muted)}
+
+/* quiz */
+.q{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q-num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--t-blue);color:var(--blue);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+.q-body{flex:1;min-width:0}
+pre.q-code{background:var(--code);color:var(--code-ink);border-radius:9px;padding:10px 12px;margin:0 0 8px;font-size:.84rem;overflow-x:auto}
+.q-ops{display:flex;flex-wrap:wrap;gap:6px}
+.q-op{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:4px 12px;font-family:"Cascadia Code",Consolas,monospace;font-size:.85rem}
+.q-op.ok{background:var(--t-green);border-color:var(--green);color:var(--green);font-weight:700}
+.q-op.no{background:var(--t-red);border-color:var(--red);color:var(--red)}
+.q-fb{margin:6px 0 0;font-size:.88rem;min-height:1em}
+.q-score{font-weight:700;color:var(--blue);margin:10px 0 0}
+
+/* explorador de matriz */
+.mexp{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
+.mexp-grid{display:grid;grid-template-columns:auto repeat(4,minmax(0,56px));gap:6px;justify-content:center;margin:14px 0 8px;align-items:center}
+.mexp-grid .hdr{font-size:.75rem;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.mexp-grid button{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:9px 0;font-weight:700;font-family:"Cascadia Code",Consolas,monospace}
+.mexp-grid button.sel{border-color:var(--green);background:var(--t-green);color:var(--green)}
+.mexp-grid button.hl{border-color:var(--blue);background:var(--t-blue)}
+.mexp-res{text-align:center;font-family:"Cascadia Code",Consolas,monospace;font-size:.92rem;min-height:2.6em}
+.malias-mem{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 6px;align-items:center}
+.mrows{display:flex;flex-direction:column;gap:6px}
+.mrow{display:flex;align-items:center;gap:8px}
+.mrow .etq{font-size:.8rem}
+.mrow .etq::after{content:none}
+.mrow .caja{margin-top:0}
+.mrow small{color:var(--muted);font-family:"Cascadia Code",Consolas,monospace;font-size:.76rem}
+.caja span.cambio{background:var(--t-red);color:var(--red);font-weight:700}
+/* consola flotante (modelo Clase 9) */
+.lanzador{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;border:0;border-radius:30px;padding:11px 18px;background:var(--blue);color:#fff;font-weight:700;font-size:.92rem;display:inline-flex;gap:8px;align-items:center;box-shadow:0 6px 20px rgba(15,27,45,.25)}
+.lanzador:hover{filter:brightness(1.08)}
+.cajon{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:50;width:min(580px,calc(100vw - 36px));max-height:calc(100vh - 36px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(15,27,45,.35);padding:16px 18px;display:none}
+.cajon.abierto{display:block}
+.cajon .cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cajon .cab strong{font-size:1.1rem;display:flex;gap:8px;align-items:center}
+@media (max-width:600px){.cajon{right:8px;left:8px;width:auto;bottom:calc(8px + env(safe-area-inset-bottom,0px))}}
+.btn-mini{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:7px;padding:4px 10px;font-size:.82rem}
+.btn-mini:hover{border-color:var(--blue);color:var(--blue)}
+.btn-c{border:0;border-radius:7px;padding:8px 16px;font-weight:600;font-size:.9rem;background:var(--blue);color:#fff}
+.btn-c:disabled{opacity:.55;cursor:wait}
+.btn-c.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.ed{display:grid;grid-template-columns:auto minmax(0,1fr);background:var(--code);border:1px solid #334155;border-radius:10px;overflow:hidden;font-family:"Cascadia Code","JetBrains Mono",Consolas,monospace;font-size:.85rem;line-height:1.6}
+.ed:focus-within{border-color:var(--blue)}
+.ed .gutter{padding:12px 8px 12px 12px;text-align:right;color:#64748b;user-select:none;border-right:1px solid #334155;min-width:40px;background:#172033}
+.ed .gutter span{display:block}
+.ed .gutter span.err{color:#fff;background:var(--red);border-radius:3px;padding:0 4px;margin-right:-4px}
+.ed .area{position:relative;overflow:hidden}
+.ed .capa,.ed textarea{margin:0;border:0;padding:12px 14px;font:inherit;line-height:inherit;white-space:pre;tab-size:4;letter-spacing:0;word-spacing:0}
+.ed .capa{position:absolute;inset:0;overflow:hidden;pointer-events:none;color:#e2e8f0;background:transparent}
+.ed .capa code{background:none;padding:0;font-size:inherit;display:block;color:inherit}
+.ed textarea{position:relative;display:block;width:100%;min-height:9em;resize:none;background:transparent;color:transparent;caret-color:#e2e8f0;outline:none;overflow-x:auto;overflow-y:hidden}
+.ed textarea::selection{background:rgba(59,130,246,.35);color:transparent}
+.entradas{display:grid;gap:4px;margin-top:10px}
+.entradas label{font-size:.82rem;color:var(--muted)}
+.entradas textarea{font-family:"Cascadia Code",Consolas,monospace;font-size:.84rem;border:1px solid var(--line);border-radius:7px;padding:6px 10px;background:var(--card);color:var(--ink);resize:vertical;min-height:2.4em;line-height:1.5}
+.barra-acc{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.barra-acc .atajo{font-size:.78rem;color:var(--muted);margin-left:auto}
+.consola-salida{margin-top:10px}
+.terminal{background:#0f172a;color:#e2e8f0;border-radius:10px;font-family:"Cascadia Code",Consolas,monospace;font-size:.82rem;line-height:1.6;padding:12px 14px;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow:auto}
+.terminal .tenue{color:#7f93ae}
+.terminal .rojo{color:#ff8f84}
+.explica{background:var(--t-red);border-radius:0 0 10px 10px;padding:14px 14px 10px;font-size:.9rem;margin-top:-6px}
+.explica strong{color:var(--red)}
+.btn-probar{margin-top:8px}
+/* simulador hash y venn */
+.hashsim,.venn{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
+.hs-in{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.hs-in input{flex:1;min-width:120px;padding:5px 9px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:inherit;font-family:"Cascadia Code",Consolas,monospace;font-size:.9rem}
+.hs-tabla{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0 6px}
+.hs-cas{border:2px solid var(--line);border-radius:9px;padding:6px 8px;min-height:62px;font-size:.8rem;transition:.2s}
+.hs-cas small{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
+.hs-cas span{display:block;font-family:"Cascadia Code",Consolas,monospace;font-size:.78rem;overflow-wrap:anywhere}
+.hs-cas.hit{border-color:var(--green);background:var(--t-green)}
+.hs-cas.miss{border-color:var(--orange);background:var(--t-orange)}
+@media (max-width:600px){.hs-tabla{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hs-msg{font-size:.9rem;margin:4px 0 0;min-height:2.6em}
+.venn svg{width:100%;max-width:440px;display:block;margin:10px auto 0}
+.venn .rA,.venn .rB,.venn .rI{fill:var(--card);transition:fill .25s}
+.venn .on{fill:#bfdbfe}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .venn .on{fill:#1e3a8a}}
+:root[data-theme="dark"] .venn .on{fill:#1e3a8a}
+.venn .tapa{fill:var(--card)}
+.venn .borde{fill:none;stroke:var(--ink);stroke-width:2;opacity:.55}
+.venn .vt{fill:var(--muted);font-size:14px;font-weight:700}
+.venn .ve{fill:var(--ink);font-size:15px;font-family:"Cascadia Code",Consolas,monospace}
+.venn-res{text-align:center;font-family:"Cascadia Code",Consolas,monospace;font-size:.9rem;min-height:2.6em;margin-top:4px}
+/* archivos, laboratorio, flujo */
+.explorador{margin-top:8px}
+.ex-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px}
+.ex-arch{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 9px;font-family:"Cascadia Code",Consolas,monospace;font-size:.8rem;text-align:left;min-width:0}
+.ex-arch span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ex-arch i{color:var(--orange)}
+.ex-arch small{color:var(--muted);font-size:.7rem;white-space:nowrap}
+.ex-arch em{font-style:normal;font-size:.66rem;font-weight:700;border-radius:9px;padding:0 6px;font-family:"Segoe UI",system-ui,sans-serif}
+.ex-arch .ex-nuevo{background:var(--t-green);color:var(--green)}
+.ex-arch .ex-modificado{background:var(--t-orange);color:#b45309}
+.ex-arch.on{border-color:var(--blue);background:var(--t-blue)}
+.ex-ver:empty{display:none}
+.ex-ver{margin-top:8px;border-radius:10px;overflow:hidden;background:var(--code)}
+.ex-cab{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;color:#cbd5e1;background:#172033}
+.ex-cab code{background:transparent!important;color:#93c5fd}
+.ex-cab .btn-mini{color:#cbd5e1;border-color:#334155}
+.ex-txt{margin:0;padding:10px 14px;color:#e2e8f0;font-size:.8rem;max-height:320px;overflow:auto;white-space:pre}
+.caj-arch{margin-top:12px}
+.btn-restaurar{width:100%;justify-content:center}
+.ent-nota{padding:7px 14px;font-size:.78rem;color:#94a3b8;border-top:1px solid rgba(148,163,184,.12)}
+.ent-nota code{background:transparent!important;color:#fbbf24}
+.ej-ent-lbl{display:block;padding:8px 10px;font-size:.78rem;color:#94a3b8;background:#172033}
+.ej-ent{display:block;width:100%;margin-top:4px;background:#0f172a;color:#fbbf24;border:1px solid #334155;border-radius:6px;padding:5px 8px;font-family:"Cascadia Code",Consolas,monospace;font-size:.8rem;resize:vertical}
+.lab{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
+.lab-in{width:100%;margin-top:10px;background:var(--code);color:#e2e8f0;border:1px solid #334155;border-radius:9px;padding:10px 12px;font-family:"Cascadia Code",Consolas,monospace;font-size:.86rem;resize:vertical}
+.lab-res{margin-top:8px;min-height:3em}
+.lab-ok{color:var(--green);font-size:.9rem}
+.lab-mal{color:var(--red);font-size:.9rem;font-family:"Cascadia Code",Consolas,monospace}
+.lab-espera{color:var(--muted);font-size:.9rem}
+.lab-py,.lab-txt{margin:6px 0 0;background:var(--t-blue);border-radius:8px;padding:8px 10px;font-size:.84rem;white-space:pre-wrap;word-break:break-word}
+.lab-txt{background:var(--t-red)}
+.lab-txt mark{background:var(--red);color:#fff;border-radius:3px;padding:0 2px}
+.flujo{display:grid;grid-template-columns:1fr 2fr 1fr;gap:12px;align-items:center;margin:8px 0 6px}
+.fl-caja{border-radius:12px;padding:16px 12px;text-align:center;border:2px solid}
+.fl-caja b{display:block}.fl-caja small{color:var(--muted)}
+.fl-py{border-color:var(--blue);background:var(--t-blue)}.fl-js{border-color:var(--green);background:var(--t-green)}
+.fl-flechas{display:flex;flex-direction:column;gap:6px}
+.fl-f{border-radius:8px;padding:5px 10px;font-size:.84rem;display:flex;justify-content:space-between;gap:8px;align-items:center;position:relative}
+.fl-f code{background:transparent!important;font-weight:700}
+.fl-f small{color:var(--muted)}
+.fl-f.der{background:var(--t-orange)}.fl-f.izq{background:var(--t-purple)}
+.fl-f.der::after{content:"→";font-weight:700;color:var(--orange)}
+.fl-f.izq::before{content:"←";font-weight:700;color:var(--purple)}
+@media (max-width:700px){.flujo{grid-template-columns:1fr}.fl-f small{display:none}}
+.fases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
+.fase{border-radius:10px;padding:10px;text-align:center;display:flex;flex-direction:column;gap:3px;position:relative}
+.fase code{background:transparent!important;font-size:.78rem}
+.fase small{color:var(--muted);font-size:.78rem}
+.f1{background:var(--t-blue)}.f2{background:var(--t-orange)}.f3{background:var(--t-green)}
+@media (max-width:600px){.fases{grid-template-columns:1fr}}
+/* footer */
+.pie{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line);padding:16px 0 26px;margin-top:10px}
+.pie .firma{font-weight:600;color:var(--ink)}
+@media print{aside.side,.practica,.win-bar button{display:none}.layout{grid-template-columns:1fr}details{border:0}details>div{display:block}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3.13.2/brython.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3.13.2/brython_stdlib.js"></script>
+</head>
+<body>
+<div class="layout">
+<aside class="side" aria-label="Agenda y herramientas de la clase">
+  <div class="side-box">
+    <h4><i class="fa-regular fa-clock c-blue"></i> Reloj de la clase</h4>
+    <div class="reloj" id="reloj" aria-live="off">00:00</div>
+    <div class="barra"><span id="barra"></span></div>
+    <div class="btns"><button class="btn" id="t-play" type="button"><i class="fa-solid fa-play"></i> Iniciar</button><button class="btn-sec" id="t-reset" type="button">Reiniciar</button></div>
+  </div>
+  <div class="side-box">
+    <h4><i class="fa-solid fa-list-ol c-blue"></i> Agenda (150 min)</h4>
+    <ul class="agenda" id="agenda"></ul>
+  </div>
+  <div class="side-box">
+    <label class="modo"><span id="modo-lbl">Vista docente</span><span class="switch"><input type="checkbox" id="modo-docente" checked><span></span></span></label>
+    <p class="muted" style="margin:.5em 0 0">Apagalo para proyectar sin las notas para el docente.</p>
+    <button class="btn-sec btn-restaurar" type="button" data-restaurar style="margin-top:10px"><i class="fa-solid fa-rotate-left"></i> Restaurar archivos</button>
+    <div class="py-estado" id="py-estado"><span class="dot"></span><span>Cargando Python…</span></div>
+  </div>
+</aside>
+<main>
+<header class="hero">
+  <h1><i class="fa-solid fa-file-code"></i> Archivos JSON en Python</h1>
+  <p>Serialización, persistencia y CRUD sobre archivos: clase teórico-práctica</p>
+  <div class="pills" style="justify-content:center;margin-top:14px"><span class="pill"><i class="fa-solid fa-graduation-cap"></i> Programación I · Clase 12</span><span class="pill"><i class="fa-solid fa-folder-open"></i> Archivos simulados en el navegador</span><span class="pill"><i class="fa-regular fa-clock"></i> 2 h 30 min</span></div>
+</header>
+<section id="apertura" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-door-open"></i><h2>Apertura</h2><span class="sec-sub">| Del dato en memoria al dato que sobrevive</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 5 min</span><span class="pill"><i class="fa-solid fa-flag"></i> Encuadre</span></div></header>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-bullseye c-blue"></i> Objetivos de aprendizaje</h3><p>Al finalizar la clase, cada estudiante va a poder:</p><div class="tiles t2"><div class="tile t-blue"><div class="tile-tit"><i class="fa-solid fa-file-code"></i> Reconocer</div><p>La estructura de un <b>JSON</b> y su equivalencia con listas y diccionarios de Python.</p></div><div class="tile t-green"><div class="tile-tit"><i class="fa-solid fa-right-left"></i> Convertir</div><p>Serializar y deserializar con <code>dumps()</code> y <code>loads()</code>.</p></div><div class="tile t-orange"><div class="tile-tit"><i class="fa-solid fa-floppy-disk"></i> Persistir</div><p>Guardar y leer archivos con <code>dump()</code>, <code>load()</code> y <code>with</code>.</p></div><div class="tile t-purple"><div class="tile-tit"><i class="fa-solid fa-database"></i> Gestionar</div><p>Implementar un <b>CRUD</b> sobre un archivo JSON con manejo de excepciones.</p></div></div></div><div class="card"><h3 class="card-tit"><i class="fa-solid fa-list-check c-blue"></i> Agenda de la clase (150 min)</h3><div class="tabla-wrap"><table class="tabla"><thead><tr><th>Bloque</th><th>Contenido</th><th>Tiempo</th></tr></thead><tbody><tr><td>Apertura</td><td>Encuadre y pregunta disparadora</td><td>5'</td></tr><tr><td>Módulo 1</td><td>Qué es JSON: sintaxis y tipos</td><td>20'</td></tr><tr><td>Módulo 2</td><td>Serialización y deserialización</td><td>25'</td></tr><tr><td>Pausa</td><td>Recreo</td><td>10'</td></tr><tr><td>Módulo 3</td><td>Leer y guardar archivos JSON</td><td>25'</td></tr><tr><td>Módulo 4</td><td>CRUD con JSON y errores típicos</td><td>25'</td></tr><tr><td>Módulo 5</td><td>Práctica progresiva (4 niveles)</td><td>35'</td></tr><tr><td>Cierre</td><td>Repaso, tarea y material</td><td>5'</td></tr></tbody></table></div></div><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p><b>Pregunta disparadora:</b> “En el proyecto, cargaron 20 empleados en una lista de diccionarios. Cierran el programa y lo vuelven a abrir: ¿dónde están?”. Se pierden: viven en la <b>memoria RAM</b>. Hoy los vamos a guardar en un archivo.</p>
+<p>Esta página trae un <b>sistema de archivos simulado</b> con los JSON de la clase (carpeta <code>archivos/</code>). Los ejemplos con <code>open()</code> se ejecutan de verdad: lo que un programa guarda, el siguiente lo lee. Si algo queda “roto”, el botón <b>Restaurar archivos</b> vuelve todo al estado original.</p></aside></div><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-folder-open c-blue"></i> Archivos de la clase</h3><p>Estos son los archivos con los que vamos a trabajar. Tocá uno para ver su contenido. El explorador se actualiza solo cada vez que un programa escribe un archivo.</p><div class="explorador" data-explorador></div></div><div class="win"><pre class="py" data-title="python — primer contacto" data-run="1">import json
+
+# Así de simple es "leer un archivo JSON"
+with open("archivos/persona.json", encoding="UTF-8") as archivo:
+    persona = json.load(archivo)
+
+print(persona)            # ahora es un diccionario de Python
+print(type(persona))      # &lt;class 'dict'&gt;
+print(persona["nombre"], persona["apellido"])</pre></div></div></div>
+</section>
+<section id="m1" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-file-code"></i><h2>Módulo 1: ¿Qué es JSON?</h2><span class="sec-sub">| Un formato de texto para guardar y transferir datos</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 20 min</span><span class="pill"><i class="fa-solid fa-book-open"></i> Teoría</span></div></header>
+<h3 class="subtema"><span class="subnum">1.1</span>Definición y estructura<span class="submin">8 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-file-code c-blue"></i> JavaScript Object Notation</h3><p><b>JSON</b> es un formato estándar <b>basado en texto</b> para almacenar y transferir datos entre sistemas. Aunque nació en JavaScript, hoy lo usan todos los lenguajes: APIs web, archivos de configuración, bases de datos documentales.</p>
+<p>Su estructura es muy parecida a la de Python: <b>objetos</b> con pares clave-valor (como un diccionario) y <b>arreglos</b> (como una lista). Las claves siempre van en <b>cadenas</b> con comillas dobles.</p><div class="tiles t2"><div class="tile t-blue"><div class="tile-tit"><i class="fa-solid fa-user"></i> Un objeto</div><p><code>persona.json</code>: un registro con legajo, nombre, apellido, edad y activo.</p></div><div class="tile t-green"><div class="tile-tit"><i class="fa-solid fa-list"></i> Una lista de objetos</div><p><code>paises.json</code>: varios registros con la misma forma.</p></div></div></div><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p>Abrí <code>persona.json</code> y <code>paises.json</code> en el explorador de la apertura. Pedí que digan “qué estructura de Python” es cada uno antes de ejecutar nada: dict y lista de dicts.</p></aside></div><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-table c-blue"></i> JSON y Python: tabla de equivalencias</h3><div class="tabla-wrap"><table class="tabla"><thead><tr><th>JSON</th><th>Python</th><th>Ejemplo JSON</th></tr></thead><tbody><tr><td>objeto <code>{ }</code></td><td><code>dict</code></td><td><code>{"edad": 25}</code></td></tr><tr><td>arreglo <code>[ ]</code></td><td><code>list</code></td><td><code>[1, 2, 3]</code></td></tr><tr><td>string</td><td><code>str</code></td><td><code>"Esteban"</code> (solo comillas dobles)</td></tr><tr><td>número entero / real</td><td><code>int</code> / <code>float</code></td><td><code>25</code>, <code>3.14</code></td></tr><tr><td><code>true</code> / <code>false</code></td><td><code>True</code> / <code>False</code></td><td>en minúscula</td></tr><tr><td><code>null</code></td><td><code>None</code></td><td><code>null</code></td></tr></tbody></table></div><p>No existen en JSON: tuplas, conjuntos, comentarios ni claves numéricas. Más abajo vemos qué pasa con cada una.</p></div></div></div>
+
+<h3 class="subtema"><span class="subnum">1.2</span>Reglas de sintaxis: el laboratorio JSON<span class="submin">12 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-flask c-blue"></i> Laboratorio: ¿es JSON válido?</h3><p>Escribí o elegí un ejemplo. La página lo pasa por <code>json.loads()</code> y muestra el resultado en Python o el error exacto que daría tu programa.</p>
+<div class="lab" id="lab">
+  <div class="alias-ctrl">
+    <button class="chip-btn on" type="button" data-lab='{"legajo": 123456, "nombre": "Esteban", "activo": true, "tel": null}'>Válido</button>
+    <button class="chip-btn" type="button" data-lab="{'nombre': 'Esteban'}">Comillas simples</button>
+    <button class="chip-btn" type="button" data-lab='{"edad": 25, "activo": True}'>True de Python</button>
+    <button class="chip-btn" type="button" data-lab='[1, 2, 3,]'>Coma final</button>
+    <button class="chip-btn" type="button" data-lab='{nombre: "Esteban"}'>Clave sin comillas</button>
+    <button class="chip-btn" type="button" data-lab='{"edad": 25} // comentario'>Comentario</button>
+    <button class="chip-btn" type="button" data-lab=''>Vacío</button>
+  </div>
+  <textarea id="lab-in" class="lab-in" rows="5" spellcheck="false" aria-label="Texto JSON a validar"></textarea>
+  <div class="lab-res" id="lab-res" aria-live="polite"></div>
+</div></div><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p>Antes de tocar cada botón, preguntá: “¿Python lo acepta?”. La mayoría falla “Comillas simples” y “True de Python”, porque <b>parecen</b> un diccionario de Python. JSON no es Python: es un formato con sus propias reglas.</p></aside></div><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-ruler c-blue"></i> Las cinco reglas que más se rompen</h3><ul class="lista-ok">
+<li>Strings y claves con <b>comillas dobles</b>: <code>"nombre"</code>, nunca <code>'nombre'</code>.</li>
+<li>Literales en minúscula: <code>true</code>, <code>false</code>, <code>null</code>.</li>
+<li><b>Sin coma</b> después del último elemento.</li>
+<li><b>Sin comentarios</b> (<code>#</code> ni <code>//</code>).</li>
+<li>Un solo valor raíz: un objeto, un arreglo, o un dato simple.</li></ul></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: confundir un dict de Python con JSON</div><p><code>print(diccionario)</code> muestra <code>{'nombre': 'Ana', 'activo': True}</code>: <b>eso no es JSON</b>. Si copiás esa salida a un archivo <code>.json</code>, al leerlo vas a obtener un <code>JSONDecodeError</code>. Para producir JSON válido usá siempre <code>json.dumps()</code> o <code>json.dump()</code>.</p></aside></div></div>
+</section>
+<section id="m2" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-right-left"></i><h2>Módulo 2: Serialización y deserialización</h2><span class="sec-sub">| dumps() y loads(): de Python a texto y de vuelta</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 25 min</span><span class="pill"><i class="fa-solid fa-gears"></i> Teoría + práctica</span></div></header>
+<div class="card"><h3 class="card-tit"><i class="fa-solid fa-diagram-project c-blue"></i> Las cuatro funciones del módulo json</h3>
+<div class="flujo">
+  <div class="fl-caja fl-py"><b>Objeto de Python</b><small>dict, list, str, int…</small></div>
+  <div class="fl-flechas">
+    <div class="fl-f der"><code>json.dumps()</code><small>serializar → cadena</small></div>
+    <div class="fl-f izq"><code>json.loads()</code><small>deserializar ← cadena</small></div>
+    <div class="fl-f der"><code>json.dump(obj, archivo)</code><small>guardar → archivo</small></div>
+    <div class="fl-f izq"><code>json.load(archivo)</code><small>leer ← archivo</small></div>
+  </div>
+  <div class="fl-caja fl-js"><b>Texto JSON</b><small>en una cadena o en un archivo .json</small></div>
+</div>
+<p class="muted">Regla mnemotécnica: la <b>s</b> final es de <b>string</b>. <code>dumps</code>/<code>loads</code> trabajan con cadenas; <code>dump</code>/<code>load</code>, con archivos.</p></div>
+
+<h3 class="subtema"><span class="subnum">2.1</span>Serializar con json.dumps()<span class="submin">8 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-arrow-right c-blue"></i> De Python a JSON</h3><p><b>Serializar</b> es convertir un objeto de Python en una <b>cadena de texto</b> con formato JSON. El resultado es un <code>str</code>: se puede imprimir, enviar por red o guardar.</p>
+<p>Al serializar, las claves del diccionario se convierten <b>automáticamente en cadenas</b> y los valores se traducen según la tabla de equivalencias.</p></div><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p>Este es el ejemplo <code>00_serializacion_deserializacion.py</code> del material. Hacé notar las dos líneas impresas: parecen iguales, pero una tiene comillas simples (<code>dict</code>) y la otra dobles (<code>str</code>).</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — 00_serializacion (dumps)" data-run="1">import json
+
+# Serialización: convertir objeto Python a JSON
+data = {
+    "nombre": "Carlos",
+    "apellido": "Garcia",
+    "edad": 35,
+    "ciudad": "Madrid"
+}
+json_string = json.dumps(data)
+
+print("Serialización (dumps) - Python a JSON:")
+print(data, type(data))                 # comillas simples: es un dict
+print(json_string, type(json_string))   # comillas dobles: es un str
+print(json_string[0:12])                # al ser str, se puede cortar como texto</pre></div></div></div>
+
+<h3 class="subtema"><span class="subnum">2.2</span>Deserializar con json.loads()<span class="submin">6 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-arrow-left c-blue"></i> De JSON a Python</h3><p><b>Deserializar</b> es el camino inverso: tomar una cadena con JSON y obtener un <code>dict</code> o una <code>list</code> de Python. Recién ahí podés acceder por clave, recorrer y modificar.</p>
+<p>Fijate en la traducción: <code>true</code> pasa a <code>True</code>.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: acceder a una clave sin deserializar</div><p>Si tenés el JSON en una cadena, <code>data_json["nombre"]</code> lanza <code>TypeError: string indices must be integers</code>: todavía es <b>texto</b>, no un diccionario. Primero <code>json.loads()</code>.</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — 00_serializacion (loads)" data-run="1">import json
+
+# Deserialización: convertir objeto JSON a Python
+print("Deserialización (loads) - JSON a Python:")
+data_json = '{"legajo": 123456, "nombre": "Esteban", "apellido": "Suárez", "edad": 25, "activo": true}'
+datos_python = json.loads(data_json)
+
+print(data_json, type(data_json))         # str: true en minúscula
+print(datos_python, type(datos_python))   # dict: True de Python
+print(datos_python["nombre"])             # Esteban -&gt; ahora sí, acceso por clave
+
+print(data_json["nombre"])                # TypeError: todavía es texto</pre></div></div></div>
+
+<h3 class="subtema"><span class="subnum">2.3</span>Parámetros útiles y conversiones sorpresa<span class="submin">11 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-sliders c-blue"></i> indent, ensure_ascii y sort_keys</h3><div class="tabla-wrap"><table class="tabla"><thead><tr><th>Parámetro</th><th>Qué hace</th></tr></thead><tbody><tr><td><code>indent=4</code></td><td>Agrega saltos de línea y sangría: el archivo queda legible para personas.</td></tr><tr><td><code>ensure_ascii=False</code></td><td>Conserva <code>á é í ó ú ñ</code> tal cual, en lugar de <code>\u00e1</code>.</td></tr><tr><td><code>sort_keys=True</code></td><td>Ordena las claves alfabéticamente.</td></tr></tbody></table></div><p>En los archivos de la materia vamos a usar siempre <code>ensure_ascii=False, indent=4</code>, como en el ejemplo del CRUD.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: datos que cambian al ir y volver</div><ul><li>Las <b>claves numéricas</b> vuelven como texto: <code>{1: "a"}</code> → <code>{"1": "a"}</code>. Después, <code>d[1]</code> da <code>KeyError</code>; hay que usar <code>d["1"]</code>.</li>
+<li>Las <b>tuplas</b> vuelven como <b>listas</b>.</li>
+<li>Los <b>conjuntos</b> no se pueden serializar: <code>TypeError: Object of type set is not JSON serializable</code>. Convertilos antes con <code>list()</code> o <code>sorted()</code>.</li></ul></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — parámetros y conversiones" data-run="1">import json
+
+alumna = {1: "primer año", "nombre": "Analía", "materias": ("Álgebra", "Programación")}
+
+print(json.dumps(alumna))                       # tildes como \u00e1
+print(json.dumps(alumna, ensure_ascii=False))   # tildes legibles
+print(json.dumps(alumna, ensure_ascii=False, indent=4))
+
+# Ida y vuelta: ¿queda igual?
+vuelta = json.loads(json.dumps(alumna))
+print(vuelta)                  # la tupla es lista y la clave 1 es "1"
+print(vuelta == alumna)        # False
+print(vuelta["1"])             # primer año -&gt; la clave ahora es str
+
+# Conjuntos: convertir antes de serializar
+etiquetas = {"python", "json"}
+print(json.dumps(sorted(etiquetas)))     # ["json", "python"]
+print(json.dumps(etiquetas))             # TypeError: set no es serializable</pre></div></div></div>
+</section>
+<section id="pausa" class="seccion pausa"><div class="pausa-in"><i class="fa-solid fa-mug-hot"></i><div><h2>Pausa: 10 minutos</h2><p>Volvemos con archivos: cómo hacer que los datos sobrevivan al cierre del programa.</p></div></div></section>
+<section id="m3" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-floppy-disk"></i><h2>Módulo 3: Leer y guardar archivos JSON</h2><span class="sec-sub">| json.dump(), json.load(), open() y with</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 25 min</span><span class="pill"><i class="fa-solid fa-gears"></i> Teoría + práctica</span></div></header>
+<h3 class="subtema"><span class="subnum">3.1</span>Guardar: de Python a un archivo .json<span class="submin">8 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-floppy-disk c-blue"></i> json.dump(objeto, archivo)</h3><p><code>dump</code> se traduce como <b>volcar</b>: vuelca el contenido de una variable de Python en un archivo con formato JSON. El archivo tiene que estar abierto en modo <b>escritura</b>.</p><div class="tabla-wrap"><table class="tabla"><thead><tr><th>Modo</th><th>Significado</th><th>Si el archivo existe</th></tr></thead><tbody><tr><td><code>"r"</code></td><td>Lectura (por defecto)</td><td>Lo lee. Si no existe: <code>FileNotFoundError</code></td></tr><tr><td><code>"w"</code></td><td>Escritura</td><td><b>Lo vacía</b> y escribe desde cero</td></tr><tr><td><code>"a"</code></td><td>Agregar al final</td><td>Escribe a continuación (no sirve para JSON)</td></tr></tbody></table></div><p>Este es el ejemplo <code>01_convertir_a_JSON.py</code>, con la apertura y el cierre manual que muestra el material.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: <code>except:</code> sin tipo y el <code>close()</code> que falla</div><p>Si <code>open()</code> falla, la variable <code>archivo</code> nunca se crea y el <code>archivo.close()</code> del <code>finally</code> lanza <code>NameError</code>. Por eso el ejemplo necesita un segundo <code>try</code> adentro del <code>finally</code>. La declaración <code>with</code> resuelve los dos problemas de una vez.</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — 01_convertir_a_JSON" data-run="1">import json
+
+stock = {"item1": 100, "item2": 200, "item3": 300}
+try:
+    archivo = open("archivos/stock.json", "w")
+    json.dump(stock, archivo)   # colocamos el contenido
+                                # de la variable en el archivo
+    print("Stock guardado")
+except:
+    print("No se pudo abrir el archivo")
+finally:
+    try:
+        archivo.close()
+    except Exception as e:
+        print(f"No se pudo cerrar el archivo correctamente: {e}")</pre></div><div class="win"><pre class="py" data-title="python — la misma idea con with" data-run="1">import json
+
+stock = {"item1": 100, "item2": 200, "item3": 300}
+
+# Con with, el archivo se cierra SOLO, aunque ocurra un error
+try:
+    with open("archivos/stock.json", "w", encoding="UTF-8") as archivo:
+        json.dump(stock, archivo, ensure_ascii=False, indent=4)
+    print("Stock guardado con with")
+except OSError as e:
+    print("No se pudo guardar:", e)</pre></div></div></div>
+
+<h3 class="subtema"><span class="subnum">3.2</span>Leer: de un archivo .json a Python<span class="submin">8 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-book-open-reader c-blue"></i> json.load(archivo)</h3><p><code>load</code> lee todo el archivo y lo convierte a Python. El tipo resultante depende del contenido: <code>paises.json</code> empieza con <code>[</code>, así que obtenemos una <b>lista</b> que en su interior contiene <b>diccionarios</b>.</p>
+<p>Siempre que el archivo pueda tener tildes o eñes, abrilo con <code>encoding="UTF-8"</code>: en Windows, sin ese parámetro, “Suárez” puede leerse como “SuÃ¡rez”.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: abrir con <code>"w"</code> lo que querías leer</div><p><code>open(ruta, "w")</code> <b>borra el contenido en el mismo momento en que se abre</b>, antes de escribir nada. Si después intentás <code>json.load()</code> sobre ese archivo, ya está vacío. Leé con <code>"r"</code>, modificá en memoria y recién al final abrí con <code>"w"</code> para guardar.</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — 02_leer_JSON (con with)" data-run="1">import json
+
+ruta_archivo = "archivos/paises.json"
+try:
+    with open(ruta_archivo, "r", encoding="UTF-8") as archivo:
+        paises = json.load(archivo)   # lista de diccionarios
+    print(type(paises), type(paises[0]))
+    for pais in paises:
+        print(f'{pais["id"]}: {pais["nombre"]}')
+except FileNotFoundError:
+    print("No existe el archivo", ruta_archivo)
+except json.JSONDecodeError as e:
+    print("El archivo no tiene JSON válido:", e)</pre></div><div class="win"><pre class="py" data-title="python — FileNotFoundError" data-run="1">import json
+
+# Error: este archivo no existe
+with open("archivos/paices.json", encoding="UTF-8") as archivo:
+    paises = json.load(archivo)</pre></div></div></div>
+
+<h3 class="subtema"><span class="subnum">3.3</span>Recorrer estructuras: diccionario de diccionarios y anidados<span class="submin">9 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-sitemap c-blue"></i> Tres formas de organizar un JSON</h3><div class="tiles t3"><div class="tile t-blue"><div class="tile-tit"><i class="fa-solid fa-list"></i> Lista de objetos</div><p><code>paises.json</code>, <code>empleados.json</code>: se recorre con <code>for item in lista</code>.</p></div><div class="tile t-green"><div class="tile-tit"><i class="fa-solid fa-key"></i> Objeto de objetos</div><p><code>productos.json</code>: la clave es el ID. Se recorre con <code>for id, p in d.items()</code>.</p></div><div class="tile t-orange"><div class="tile-tit"><i class="fa-solid fa-sitemap"></i> Anidado</div><p><code>users.json</code>: objetos dentro de objetos. Se accede encadenando claves.</p></div></div><p>En <code>users.json</code>, la calle de un usuario está en <code>user["address"]["street"]</code> y la latitud en <code>user["address"]["geo"]["lat"]</code>. Cada corchete baja un nivel.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: las claves del archivo vienen como texto</div><p>En <code>productos.json</code> los IDs son <code>"1"</code>, <code>"2"</code>… (JSON no admite claves numéricas). <code>productos[1]</code> da <code>KeyError: 1</code>. Si el usuario escribe un número, convertilo a texto: <code>productos[str(id_producto)]</code>.</p></aside><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p>El ejemplo de usuarios usa <code>users.json</code> de JSONPlaceholder, la API de prueba más usada en cursos: es el mismo formato que devuelve una API real, así que conecta con la materia de web scraping y APIs.</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — 02b_leer_JSON (productos)" data-run="1">import json
+
+def mostrar_productos(ruta_archivo):
+    try:
+        with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+            productos = json.load(archivo)    # diccionario de diccionarios
+        print("-" * 80)
+        print(f'{"ID":&lt;5} {"Descripción":&lt;25} {"Presentación":&lt;20} {"Marca":&lt;15} {"Precio":&gt;6}')
+        print("-" * 80)
+        for id_producto in productos:         # recorre las CLAVES ("1", "2"...)
+            p = productos[id_producto]        # el diccionario interno
+            print(f'{id_producto:&lt;5} {p["Descripcion"]:&lt;25} {p["Presentacion"]:&lt;20} {p["Marca"]:&lt;15} ${p["Precio"]:&gt;5}')
+    except Exception as e:
+        print(f"No se pudo procesar el archivo: {e}")
+
+mostrar_productos("archivos/productos.json")</pre></div><div class="win"><pre class="py" data-title="python — 02c_leer_users (anidados)" data-run="1">import json
+
+def mostrar_usuarios_tabular(ruta_archivo):
+    try:
+        with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+            users = json.load(archivo)        # lista de diccionarios anidados
+        print("-" * 112)
+        print(f'{"ID":&lt;5}{"NOMBRE":&lt;28}{"CORREO ELECTRÓNICO":&lt;33}{"CALLE":&lt;28}{"DEPARTAMENTO":&lt;18}')
+        print("-" * 112)
+        for user in users:
+            print(f'{user["id"]:&lt;5}{user["name"].upper():&lt;28}{user["email"].lower():&lt;33}'
+                  f'{user["address"]["street"]:&lt;28}{user["address"]["suite"]:&lt;18}')
+        print("-" * 112)
+    except Exception as e:
+        print(f"No se pudo procesar el archivo: {e}")
+
+mostrar_usuarios_tabular("archivos/users.json")
+
+# Bajar varios niveles
+with open("archivos/users.json", encoding="utf-8") as f:
+    primero = json.load(f)[0]
+print(primero["address"]["geo"]["lat"], primero["company"]["name"])</pre></div></div></div>
+</section>
+<section id="m4" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-database"></i><h2>Módulo 4: CRUD con JSON y errores típicos</h2><span class="sec-sub">| Leer, modificar en memoria y sobrescribir</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 25 min</span><span class="pill"><i class="fa-solid fa-gears"></i> Teoría + práctica</span></div></header>
+<h3 class="subtema"><span class="subnum">4.1</span>El patrón de las tres fases<span class="submin">5 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-arrows-spin c-blue"></i> Un archivo JSON no se edita “por partes”</h3><p>No se puede cambiar una línea de un archivo JSON como en una planilla. Toda operación de alta, baja o modificación sigue siempre el mismo ciclo:</p>
+<div class="fases"><div class="fase f1"><b>1. Leer</b><code>json.load()</code><small>archivo → lista en memoria</small></div><div class="fase f2"><b>2. Modificar</b><code>append / pop / [i][k] = v</code><small>los cambios ocurren en RAM</small></div><div class="fase f3"><b>3. Sobrescribir</b><code>json.dump()</code><small>memoria → archivo completo</small></div></div>
+<p><b>C</b>reate (alta), <b>R</b>ead (listado), <b>U</b>pdate (modificación) y <b>D</b>elete (baja): las tres últimas letras usan las tres fases; el listado, solo la primera.</p></div><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p>Dibujá las tres cajas en el pizarrón y, durante todo el módulo, señalá en qué fase está cada línea del CRUD. El error más común en el proyecto es olvidar la fase 3: el programa “funciona” mientras está abierto y los cambios desaparecen al cerrarlo.</p></aside></div><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-file-lines c-blue"></i> Estado inicial de empleados.json</h3><p>Abrilo en el explorador antes de ejecutar el CRUD. Después de correrlo, volvé a mirarlo: el archivo cambió. Si querés repetir la demostración, tocá <b>Restaurar archivos</b>.</p><div class="explorador" data-explorador data-abrir="archivos/empleados.json"></div></div></div></div>
+
+<h3 class="subtema"><span class="subnum">4.2</span>El CRUD completo, paso a paso<span class="submin">12 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-list-ol c-blue"></i> Recorrido por las funciones</h3><div class="tabla-wrap"><table class="tabla"><thead><tr><th>Función</th><th>Fases</th><th>Lo importante</th></tr></thead><tbody><tr><td><code>agregar_datos</code></td><td>1 · 2 · 3</td><td>Calcula el legajo nuevo con <code>max(...) + 1</code>, valida la edad con <code>while True</code> + <code>try</code> y agrega con <code>append()</code>.</td></tr><tr><td><code>mostrar_datos</code></td><td>1</td><td>Solo lee y formatea con f-strings de ancho fijo (<code>:&lt;10</code>).</td></tr><tr><td><code>modificar_datos</code></td><td>1 · 2 · 3</td><td>Busca el índice con una lista auxiliar de legajos y <code>index()</code>.</td></tr><tr><td><code>eliminar_por_legajo</code></td><td>1 · 2 · 3</td><td>Mismo buscador, y <code>pop(indice)</code> para quitar.</td></tr></tbody></table></div><p>Las <b>Datos de entrada</b> de este bloque reproducen la ejecución del material: alta de Fernando Segovia, edad de Analía a 46 y baja de Esteban (legajo 123456). Probá cambiarlas en la consola, por ejemplo con un legajo inexistente o una edad con letras.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: f-strings con las mismas comillas adentro</div><p>El material original tiene <code>print(f'Se ha agregado a {nuevo_empleado['nombre']}')</code>: comillas simples afuera y adentro. Funciona en <b>Python 3.12 o superior</b>, pero en 3.11 o anteriores es un <code>SyntaxError</code>. En la versión de esta página se usan comillas dobles afuera y simples adentro, que funciona en cualquier versión.</p></aside><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: pedir datos antes de validar que existe</div><p><code>modificar_datos</code> pide la nueva edad <b>antes</b> de comprobar que el legajo existe: si no existe, el usuario cargó un dato para nada. Una mejora simple es verificar primero el legajo y recién después pedir la edad. Es un buen ejercicio de refactorización para el proyecto.</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — 03_CRUD_JSON" data-run="1" data-ent="Fernando
+Segovia
+32
+s
+567890
+46
+123456">import json
+
+# Agregar datos
+def agregar_datos(archivo):
+    try:
+        with open(archivo, 'r', encoding="UTF-8") as datos:
+            empleados = json.load(datos)  # 1) LEER: cargar el contenido existente
+
+        # Obtener el legajo más alto y sumar 1
+        if empleados:
+            nuevo_legajo = max(emp["legajo"] for emp in empleados) + 1
+        else:
+            nuevo_legajo = 1  # Si la lista está vacía, comenzamos desde 1
+
+        # Solicitar los datos al usuario
+        nombre = input("Ingrese el nombre: ").strip().capitalize()
+        apellido = input("Ingrese el apellido: ").strip().capitalize()
+        while True:
+            try:
+                edad = int(input("Ingrese la edad: "))
+                break
+            except ValueError:
+                print("Por favor, ingrese un número válido para la edad.")
+
+        while True:
+            activo_input = input("¿Está activo? (s/n): ").strip().lower()
+            if activo_input in ["s", "n"]:
+                activo = True if activo_input == "s" else False
+                break
+            else:
+                print("Respuesta no válida. Ingrese 's' o 'n'.")
+
+        # 2) MODIFICAR EN MEMORIA: crear el nuevo empleado
+        nuevo_empleado = {"legajo": nuevo_legajo, "nombre": nombre, "apellido": apellido, "edad": edad, "activo": activo}
+        empleados.append(nuevo_empleado)
+
+        # 3) SOBRESCRIBIR el archivo con los datos actualizados
+        with open(archivo, 'w', encoding="UTF-8") as datos:
+            json.dump(empleados, datos, ensure_ascii=False, indent=4)
+        print(f"Se ha agregado a {nuevo_empleado['nombre']} {nuevo_empleado['apellido']}")
+
+    except (FileNotFoundError, OSError, json.JSONDecodeError) as error:
+        print(f'Error! {error}')
+
+# Listar datos
+def mostrar_datos(archivo, modo):
+    try:
+        with open(archivo, modo, encoding="UTF-8") as datos:
+            empleados = json.load(datos)
+            print("\nLISTADO DE EMPLEADOS")
+            print(f'{"Legajo":&lt;10}{"Apellido y nombre":&lt;30}{"Edad":&lt;6}{"Estado":&lt;10}')
+            for emp in empleados:
+                nombre_completo = f"{emp['apellido'].upper()} {emp['nombre']}"
+                activo = "Activo" if emp['activo'] else "Inactivo"
+                print(f"{emp['legajo']:&lt;10}{nombre_completo:&lt;30}{emp['edad']:&lt;6}{activo:&lt;10}")
+    except (FileNotFoundError, OSError, json.JSONDecodeError) as error:
+        print(f'Error! {error}')
+
+# Modificar un dato (cambiar la edad de un empleado)
+def modificar_datos(archivo, legajo):
+    try:
+        with open(archivo, 'r', encoding="UTF-8") as datos:
+            empleados = json.load(datos)
+        # Pedir la nueva edad antes
+        while True:
+            try:
+                nueva_edad = int(input("Ingrese la nueva edad: "))
+                break
+            except ValueError:
+                print("Por favor, ingrese un número válido.")
+
+        # Verificar si el legajo existe usando 'in' en una lista de legajos
+        legajos = [emp["legajo"] for emp in empleados]
+        if legajo in legajos:
+            indice = legajos.index(legajo)          # posición del empleado
+            empleados[indice]["edad"] = nueva_edad
+            with open(archivo, 'w', encoding="UTF-8") as datos:
+                json.dump(empleados, datos, ensure_ascii=False, indent=4)
+            print(f"Edad del empleado con legajo {legajo} modificada a {nueva_edad} años.")
+        else:
+            print(f"Empleado con legajo {legajo} no encontrado.")
+    except (FileNotFoundError, OSError, json.JSONDecodeError) as error:
+        print(f'Error! {error}')
+
+# Eliminar datos (por legajo)
+def eliminar_por_legajo(archivo, legajo):
+    try:
+        with open(archivo, 'r', encoding="UTF-8") as datos:
+            empleados = json.load(datos)
+        legajos = [emp["legajo"] for emp in empleados]
+        if legajo in legajos:
+            indice = legajos.index(legajo)
+            empleados.pop(indice)  # Elimina el empleado por índice
+            with open(archivo, 'w', encoding="UTF-8") as datos:
+                json.dump(empleados, datos, ensure_ascii=False, indent=4)
+            print(f"Empleado con legajo {legajo} eliminado.")
+        else:
+            print(f"Empleado con legajo {legajo} no encontrado.")
+    except (FileNotFoundError, OSError, json.JSONDecodeError) as error:
+        print(f'Error! {error}')
+
+# Programa principal
+mostrar_datos("archivos/empleados.json", "r")
+agregar_datos("archivos/empleados.json")
+
+legajo = int(input("Legajo a modificar: "))
+modificar_datos("archivos/empleados.json", legajo)
+
+legajo = int(input("Legajo a eliminar: "))
+eliminar_por_legajo("archivos/empleados.json", legajo)
+mostrar_datos("archivos/empleados.json", "r")</pre></div></div></div>
+
+<h3 class="subtema"><span class="subnum">4.3</span>Errores típicos al trabajar con archivos JSON<span class="submin">8 min</span></h3>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-bug c-blue"></i> Qué excepción esperar en cada caso</h3><div class="tabla-wrap"><table class="tabla"><thead><tr><th>Situación</th><th>Excepción</th></tr></thead><tbody><tr><td>La ruta no existe o tiene un error de tipeo</td><td><code>FileNotFoundError</code></td></tr><tr><td>El archivo existe pero está vacío o tiene JSON inválido</td><td><code>json.JSONDecodeError</code></td></tr><tr><td>Sin permisos, disco lleno, ruta a una carpeta</td><td><code>OSError</code></td></tr><tr><td>Se intenta guardar un <code>set</code> u otro objeto no compatible</td><td><code>TypeError</code></td></tr><tr><td>Se busca una clave que no está en el registro</td><td><code>KeyError</code></td></tr></tbody></table></div><p><code>FileNotFoundError</code> es un caso particular de <code>OSError</code>. Si querés un mensaje distinto para cada uno, el <code>except FileNotFoundError</code> tiene que ir <b>antes</b>.</p></div><aside class="alerta"><div class="alerta-tit"><i class="fa-solid fa-triangle-exclamation"></i> Alerta de error típico: el archivo vacío o corrupto</div><p>Un archivo <code>.json</code> recién creado y vacío <b>no</b> es una lista vacía: <code>json.load()</code> lanza <code>JSONDecodeError: Expecting value</code>. Inicializalo con <code>[]</code> o <code>{}</code>. En el explorador está <code>archivos/roto.json</code>, con una coma de más, para practicar.</p></aside></div><div class="col"><div class="win"><pre class="py" data-title="python — errores al leer" data-run="1">import json
+
+def cargar(ruta):
+    try:
+        with open(ruta, encoding="UTF-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"[{ruta}] no existe")
+    except json.JSONDecodeError as e:
+        print(f"[{ruta}] JSON inválido -&gt; {e}")
+    except OSError as e:
+        print(f"[{ruta}] error de E/S -&gt; {e}")
+    return None
+
+print(cargar("archivos/paises.json") is not None)   # True
+cargar("archivos/no_existe.json")
+cargar("archivos/roto.json")
+
+# Crear un archivo vacío y tratar de leerlo
+with open("archivos/vacio.json", "w", encoding="UTF-8") as f:
+    pass                                 # no se escribe nada
+cargar("archivos/vacio.json")</pre></div><div class="win"><pre class="py" data-title="python — KeyError con claves numéricas" data-run="1">import json
+
+with open("archivos/productos.json", encoding="UTF-8") as f:
+    productos = json.load(f)
+
+print(productos["1"]["Descripcion"])     # la clave es el texto "1"
+print(productos[1]["Descripcion"])       # KeyError: 1 -&gt; la clave es str</pre></div></div></div>
+</section>
+<section id="m5" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-dumbbell"></i><h2>Módulo 5: Práctica progresiva</h2><span class="sec-sub">| De la cadena JSON al sistema con persistencia</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 35 min</span><span class="pill"><i class="fa-solid fa-laptop-code"></i> Práctica</span></div></header>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-route c-blue"></i> Cómo usar esta práctica</h3><p>Cada ejercicio tiene editor, pista y solución explicada. Los programas leen y escriben en el <b>sistema de archivos simulado</b>: lo que guarda un ejercicio queda disponible para el siguiente y aparece en el explorador. Si querés empezar de cero, tocá <b>Restaurar archivos</b>.</p>
+<div class="niveles"><span class="badge b-basico"><i class="fa-solid fa-seedling"></i> Básico: 7'</span><span class="badge b-intermedio"><i class="fa-solid fa-layer-group"></i> Intermedio: 10'</span><span class="badge b-avanzado"><i class="fa-solid fa-rocket"></i> Avanzado: 10'</span><span class="badge b-dios"><i class="fa-solid fa-crown"></i> Nivel Dios: 8'</span></div><div class="explorador" data-explorador></div></div></div>
+<div class="col"><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p><b>Dinámica sugerida:</b> parejas que se rotan los roles. Resolvé en vivo <b>B2</b> (fija las tres fases) y <b>A1</b>: esas dos funciones son las que conviene copiar al proyecto final. <b>D1</b> y <b>D2</b> quedan como desafío o tarea.</p>
+<p>Ojo: los ejercicios que escriben archivos cambian el estado para los siguientes. Si un resultado no coincide con la “salida esperada”, lo más probable es que haya que restaurar los archivos.</p></aside></div></div>
+<h3 class="nivel-tit c-green"><i class="fa-solid fa-seedling"></i> Nivel básico: serializar, leer y agregar</h3>
+<div class="ej-grid"><article class="ej n-basico" id="b1">
+  <div class="ej-head"><span class="ej-id">B1</span><h4>Ida y vuelta: serializar y deserializar</h4><span class="badge b-basico"><i class="fa-solid fa-seedling"></i> Básico</span></div>
+  <div class="ej-enun"><p>(1) Serializá el diccionario <code>alumno</code> en una cadena JSON legible (con tildes y sangría de 2). (2) Mostrá su tipo. (3) Deserializá esa cadena en <code>copia</code> y mostrá el promedio de sus notas. (4) Comprobá si <code>copia == alumno</code> y explicá en un comentario por qué da ese resultado.</p></div><div class="salida-esp"><span>Salida esperada</span><pre>{
+  "legajo": 1001,
+  "nombre": "Martín Núñez",
+  "notas": [
+    8,
+    6,
+    10
+  ],
+  "regular": true
+}
+&lt;class 'str'&gt;
+Promedio de Martín Núñez: 8.00
+False
+&lt;class 'list'&gt;</pre></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+alumno = {&quot;legajo&quot;: 1001, &quot;nombre&quot;: &quot;Martín Núñez&quot;, &quot;notas&quot;: (8, 6, 10), &quot;regular&quot;: True}
+">import json
+
+alumno = {"legajo": 1001, "nombre": "Martín Núñez", "notas": (8, 6, 10), "regular": True}
+</textarea><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p><code>json.dumps(alumno, ensure_ascii=False, indent=2)</code>. Para el punto 4, fijate qué tipo tiene <code>copia["notas"]</code>.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li><code>texto = json.dumps(alumno, ensure_ascii=False, indent=2)</code> produce un <code>str</code>.</li><li><code>copia = json.loads(texto)</code> lo convierte en un <code>dict</code> nuevo.</li><li>El promedio se calcula sobre <code>copia["notas"]</code> con <code>sum()</code> y <code>len()</code>.</li><li>La comparación da <code>False</code>: la tupla <code>(8, 6, 10)</code> volvió como lista <code>[8, 6, 10]</code>, y una tupla nunca es igual a una lista.</li></ol><div class="win"><pre class="py" data-title="python — solución B1" data-run="1">import json
+
+alumno = {"legajo": 1001, "nombre": "Martín Núñez", "notas": (8, 6, 10), "regular": True}
+
+texto = json.dumps(alumno, ensure_ascii=False, indent=2)   # 1) serializar
+print(texto)
+print(type(texto))                                         # 2) &lt;class 'str'&gt;
+
+copia = json.loads(texto)                                  # 3) deserializar
+promedio = sum(copia["notas"]) / len(copia["notas"])
+print(f"Promedio de {copia['nombre']}: {promedio:.2f}")
+
+print(copia == alumno)                                     # 4) False
+# JSON no tiene tuplas: (8, 6, 10) volvió como la lista [8, 6, 10]
+print(type(copia["notas"]))</pre></div></div></details>
+</article><article class="ej n-basico" id="b2">
+  <div class="ej-head"><span class="ej-id">B2</span><h4>Agregar un país a paises.json</h4><span class="badge b-basico"><i class="fa-solid fa-seedling"></i> Básico</span></div>
+  <div class="ej-enun"><p>Leé <code>archivos/paises.json</code>, mostrá los países y su cantidad. Pedí el nombre de un país nuevo y agregalo con el <code>id</code> siguiente al mayor. Si ya existe (sin distinguir mayúsculas), avisá y no lo agregues. Guardá el archivo y volvé a leerlo para confirmar.</p></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+ruta = &quot;archivos/paises.json&quot;
+">import json
+
+ruta = "archivos/paises.json"
+</textarea><label class="ej-ent-lbl">Datos de entrada para <code>input()</code>, uno por línea<textarea class="ej-ent" rows="1" spellcheck="false">chile</textarea></label><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>Es el patrón de tres fases: <code>json.load</code>, <code>append</code>, <code>json.dump</code>. El nuevo id es <code>max(p["id"] for p in paises) + 1</code>. Para comparar sin mayúsculas, usá <code>.lower()</code> en los dos lados.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li><b>Leer:</b> <code>with open(ruta, encoding="UTF-8") as f: paises = json.load(f)</code>.</li><li>Armá un conjunto con los nombres en minúscula para la búsqueda: <code>{p["nombre"].lower() for p in paises}</code>.</li><li><b>Modificar:</b> si no existe, <code>paises.append({"id": nuevo_id, "nombre": nombre})</code>.</li><li><b>Sobrescribir:</b> abrir con <code>"w"</code> y <code>json.dump(paises, f, ensure_ascii=False, indent=4)</code>.</li><li>Releer el archivo demuestra que el dato quedó guardado y no solo en memoria. Mirá también el explorador.</li></ol><div class="win"><pre class="py" data-title="python — solución B2" data-run="1" data-ent="chile">import json
+
+ruta = "archivos/paises.json"
+
+# 1) Leer
+with open(ruta, encoding="UTF-8") as f:
+    paises = json.load(f)
+for p in paises:
+    print(f'{p["id"]}: {p["nombre"]}')
+print("Cantidad:", len(paises))
+
+nombre = input("País nuevo: ").strip().title()
+existentes = {p["nombre"].lower() for p in paises}
+
+if nombre.lower() in existentes:
+    print(nombre, "ya está en el archivo")
+else:
+    # 2) Modificar en memoria
+    nuevo_id = max(p["id"] for p in paises) + 1 if paises else 1
+    paises.append({"id": nuevo_id, "nombre": nombre})
+    # 3) Sobrescribir
+    with open(ruta, "w", encoding="UTF-8") as f:
+        json.dump(paises, f, ensure_ascii=False, indent=4)
+    print(f"Agregado: {nuevo_id}: {nombre}")
+
+# Verificación: leer de nuevo desde el archivo
+with open(ruta, encoding="UTF-8") as f:
+    print("En el archivo hay", len(json.load(f)), "países")</pre></div></div></details>
+</article></div>
+<h3 class="nivel-tit c-orange"><i class="fa-solid fa-layer-group"></i> Nivel intermedio: recorrer y transformar estructuras</h3>
+<div class="ej-grid"><article class="ej n-intermedio" id="i1">
+  <div class="ej-head"><span class="ej-id">I1</span><h4>Reporte de productos (diccionario de diccionarios)</h4><span class="badge b-intermedio"><i class="fa-solid fa-layer-group"></i> Intermedio</span></div>
+  <div class="ej-enun"><p>A partir de <code>archivos/productos.json</code> mostrá: (1) el precio promedio, (2) el producto más caro con su ID, (3) los productos de presentación <code>Paq. 500 g</code> y (4) cuántos productos hay de cada presentación, usando un contador.</p></div><div class="salida-esp"><span>Salida esperada</span><pre>Precio promedio: $1780.00
+Más caro: [3] Lentejas secas (Lucchetti) $2100
+Paquetes de 500 g:
+  2: Fideos tirabuzón
+  3: Lentejas secas
+  5: Polenta
+Por presentación: {'Paq. 1 kg': 2, 'Paq. 500 g': 3}</pre></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+with open(&quot;archivos/productos.json&quot;, encoding=&quot;UTF-8&quot;) as f:
+    productos = json.load(f)
+">import json
+
+with open("archivos/productos.json", encoding="UTF-8") as f:
+    productos = json.load(f)
+</textarea><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>Recorré con <code>for id_p, p in productos.items()</code>: <code>id_p</code> es la clave (<code>"1"</code>) y <code>p</code>, el diccionario interno. El contador es el patrón <code>d[k] = d.get(k, 0) + 1</code> de la clase anterior.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li>Guardián: si <code>productos</code> está vacío, no hay promedio posible.</li><li>Promedio: acumular <code>p["Precio"]</code> y dividir por <code>len(productos)</code>.</li><li>Más caro: guardar <code>mejor_id</code> y compararlo con <code>productos[mejor_id]["Precio"]</code> en cada vuelta.</li><li>Filtro: <code>if p["Presentacion"] == "Paq. 500 g"</code>.</li><li>Contador: <code>por_pres[p["Presentacion"]] = por_pres.get(p["Presentacion"], 0) + 1</code>.</li></ol><div class="win"><pre class="py" data-title="python — solución I1" data-run="1">import json
+
+with open("archivos/productos.json", encoding="UTF-8") as f:
+    productos = json.load(f)
+
+if not productos:                                   # guardián
+    print("No hay productos")
+else:
+    total = 0
+    mejor_id = None
+    por_pres = {}
+    for id_p, p in productos.items():
+        total += p["Precio"]
+        if mejor_id is None or p["Precio"] &gt; productos[mejor_id]["Precio"]:
+            mejor_id = id_p
+        por_pres[p["Presentacion"]] = por_pres.get(p["Presentacion"], 0) + 1
+
+    print(f"Precio promedio: ${total / len(productos):.2f}")
+    caro = productos[mejor_id]
+    print(f"Más caro: [{mejor_id}] {caro['Descripcion']} ({caro['Marca']}) ${caro['Precio']}")
+
+    print("Paquetes de 500 g:")
+    for id_p, p in productos.items():
+        if p["Presentacion"] == "Paq. 500 g":
+            print(f"  {id_p}: {p['Descripcion']}")
+
+    print("Por presentación:", por_pres)</pre></div></div></details>
+</article><article class="ej n-intermedio" id="i2">
+  <div class="ej-head"><span class="ej-id">I2</span><h4>Usuarios de una API (JSON anidado)</h4><span class="badge b-intermedio"><i class="fa-solid fa-layer-group"></i> Intermedio</span></div>
+  <div class="ej-enun"><p>Con <code>archivos/users.json</code>: (1) listá el nombre y la ciudad de los usuarios del <b>hemisferio sur</b> (latitud negativa), (2) contá cuántos correos hay por <b>extensión</b> de dominio (<code>.biz</code>, <code>.info</code>…), ordenados de mayor a menor, y (3) generá <code>archivos/contactos.json</code> con una lista de diccionarios <code>{"usuario", "email", "empresa"}</code>.</p></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+with open(&quot;archivos/users.json&quot;, encoding=&quot;UTF-8&quot;) as f:
+    users = json.load(f)
+">import json
+
+with open("archivos/users.json", encoding="UTF-8") as f:
+    users = json.load(f)
+</textarea><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>La latitud está en <code>u["address"]["geo"]["lat"]</code> y es un <b>texto</b>: convertila con <code>float()</code>. La extensión es lo que sigue al último punto: <code>email.split(".")[-1]</code>.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li>Recorré la lista con <code>for u in users</code> y bajá por las claves anidadas.</li><li><code>float(u["address"]["geo"]["lat"]) &lt; 0</code> identifica el hemisferio sur. Sin <code>float()</code>, comparar <code>"-37.3" &lt; 0</code> da <code>TypeError</code>.</li><li>Contador de extensiones con <code>get()</code>; para ordenar por cantidad, DSU con tuplas <code>(cantidad, ext)</code> y <code>reverse=True</code>.</li><li>Armá la lista nueva con <code>append({...})</code> y guardala con <code>json.dump</code>. Abrí el archivo nuevo en el explorador.</li></ol><div class="win"><pre class="py" data-title="python — solución I2" data-run="1">import json
+
+with open("archivos/users.json", encoding="UTF-8") as f:
+    users = json.load(f)
+
+# 1) Hemisferio sur
+print("Hemisferio sur:")
+for u in users:
+    lat = float(u["address"]["geo"]["lat"])      # viene como texto
+    if lat &lt; 0:
+        print(f"  {u['name']:&lt;26} {u['address']['city']}")
+
+# 2) Extensiones de dominio
+ext = {}
+for u in users:
+    e = u["email"].split(".")[-1].lower()
+    ext[e] = ext.get(e, 0) + 1
+ranking = sorted([(n, e) for e, n in ext.items()], reverse=True)
+for n, e in ranking:
+    print(f".{e:&lt;5} {n}")
+
+# 3) Nuevo archivo JSON
+contactos = []
+for u in users:
+    contactos.append({"usuario": u["username"], "email": u["email"].lower(),
+                      "empresa": u["company"]["name"]})
+with open("archivos/contactos.json", "w", encoding="UTF-8") as f:
+    json.dump(contactos, f, ensure_ascii=False, indent=4)
+print("Guardados", len(contactos), "contactos")</pre></div></div></details>
+</article></div>
+<h3 class="nivel-tit c-red"><i class="fa-solid fa-rocket"></i> Nivel avanzado: funciones robustas y validación</h3>
+<div class="ej-grid"><article class="ej n-avanzado" id="a1">
+  <div class="ej-head"><span class="ej-id">A1</span><h4>Funciones robustas: cargar_json y guardar_json</h4><span class="badge b-avanzado"><i class="fa-solid fa-rocket"></i> Avanzado</span></div>
+  <div class="ej-enun"><p>Escribí dos funciones reutilizables para el proyecto final:</p><ul><li><code>cargar_json(ruta, defecto)</code>: devuelve el contenido del archivo. Si no existe, lo <b>crea</b> con <code>defecto</code> y devuelve <code>defecto</code>. Si está corrupto, guarda una copia del texto en <code>ruta + ".bak"</code>, avisa y devuelve <code>defecto</code>.</li><li><code>guardar_json(ruta, datos)</code>: guarda con tildes y sangría; devuelve <code>True</code> o <code>False</code> según si pudo.</li></ul><p>Probalas con <code>archivos/config.json</code> (no existe), <code>archivos/roto.json</code> (corrupto) y <code>archivos/paises.json</code>.</p></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+def guardar_json(ruta, datos):
+    pass
+
+def cargar_json(ruta, defecto):
+    pass
+">import json
+
+def guardar_json(ruta, datos):
+    pass
+
+def cargar_json(ruta, defecto):
+    pass
+</textarea><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>Leé primero el <b>texto</b> con <code>f.read()</code> y recién después usá <code>json.loads(texto)</code>: así, si falla, todavía tenés el texto para guardarlo en el <code>.bak</code>.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li><code>guardar_json</code>: un <code>try</code> con <code>with open(ruta, "w")</code> + <code>json.dump</code>; <code>except (OSError, TypeError)</code> devuelve <code>False</code>.</li><li><code>cargar_json</code>: <code>try</code> para leer el texto; <code>except FileNotFoundError</code> → <code>guardar_json(ruta, defecto)</code> y devolver <code>defecto</code>.</li><li>Con el texto en la mano, otro <code>try</code> con <code>json.loads(texto)</code>; en <code>except json.JSONDecodeError</code> se escribe el <code>.bak</code> con el texto original.</li><li>Separar “leer el archivo” de “interpretar el JSON” permite tratar cada error por separado.</li><li><b>¿Por qué devolver <code>defecto</code>?</b> El programa puede seguir funcionando con datos vacíos en lugar de cerrarse.</li></ol><div class="win"><pre class="py" data-title="python — solución A1" data-run="1">import json
+
+def guardar_json(ruta, datos):
+    try:
+        with open(ruta, "w", encoding="UTF-8") as f:
+            json.dump(datos, f, ensure_ascii=False, indent=4)
+        return True
+    except (OSError, TypeError) as e:
+        print(f"[guardar] {ruta}: {e}")
+        return False
+
+def cargar_json(ruta, defecto):
+    try:
+        with open(ruta, encoding="UTF-8") as f:
+            texto = f.read()                     # leer el TEXTO primero
+    except FileNotFoundError:
+        print(f"[cargar] {ruta} no existe: se crea con el valor por defecto")
+        guardar_json(ruta, defecto)
+        return defecto
+    try:
+        return json.loads(texto)                 # interpretar el JSON
+    except json.JSONDecodeError as e:
+        print(f"[cargar] {ruta} está corrupto ({e})")
+        with open(ruta + ".bak", "w", encoding="UTF-8") as f:
+            f.write(texto)                       # se conserva el original
+        print(f"[cargar] copia guardada en {ruta}.bak")
+        return defecto
+
+config = cargar_json("archivos/config.json", {"tema": "claro", "idioma": "es"})
+print(config)
+datos = cargar_json("archivos/roto.json", {})
+print(datos)
+paises = cargar_json("archivos/paises.json", [])
+print(len(paises), "países")
+print(guardar_json("archivos/etiquetas.json", {"python", "json"}))   # set: no se puede</pre></div></div></details>
+</article><article class="ej n-avanzado" id="a2">
+  <div class="ej-head"><span class="ej-id">A2</span><h4>Registrar ventas en stock.json</h4><span class="badge b-avanzado"><i class="fa-solid fa-rocket"></i> Avanzado</span></div>
+  <div class="ej-enun"><p>Escribí <code>registrar_venta(ruta, item, cantidad)</code> que descuente unidades del stock guardado en <code>archivos/stock.json</code>. Debe lanzar <code>KeyError</code> si el ítem no existe y <code>ValueError</code> si la cantidad no es positiva o no alcanza el stock. Solo guarda el archivo si la venta es válida. En el programa principal, procesá la lista de ventas capturando cada error con su mensaje y al final mostrá el stock.</p></div><div class="salida-esp"><span>Salida esperada</span><pre>OK   item1 -30 -&gt; quedan 70
+ERR  item9: no existe el ítem 'item9'
+ERR  item2: stock insuficiente (hay 200)
+ERR  item3: la cantidad debe ser positiva
+OK   item3 -100 -&gt; quedan 200
+Stock final: {'item1': 70, 'item2': 200, 'item3': 200}</pre></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+ventas = [(&quot;item1&quot;, 30), (&quot;item9&quot;, 5), (&quot;item2&quot;, 250), (&quot;item3&quot;, -4), (&quot;item3&quot;, 100)]
+">import json
+
+ventas = [("item1", 30), ("item9", 5), ("item2", 250), ("item3", -4), ("item3", 100)]
+</textarea><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>La función <b>lanza</b> los errores con <code>raise</code> y <b>no imprime</b>; el programa principal los <b>captura</b>. Es la división de roles de la clase de excepciones.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li>Leer el stock con <code>json.load</code>.</li><li>Validar en orden: existencia (<code>if item not in stock: raise KeyError(item)</code>), cantidad positiva, stock suficiente.</li><li>Recién con todo válido: <code>stock[item] -= cantidad</code> y guardar. Si se guardara antes de validar, un error dejaría el archivo a medio actualizar.</li><li>En el <code>for</code> del programa principal, un <code>try</code> por venta: un error no frena las ventas siguientes.</li></ol><div class="win"><pre class="py" data-title="python — solución A2" data-run="1">import json
+
+RUTA = "archivos/stock.json"
+
+def registrar_venta(ruta, item, cantidad):
+    with open(ruta, encoding="UTF-8") as f:
+        stock = json.load(f)
+    if item not in stock:
+        raise KeyError(item)
+    if cantidad &lt;= 0:
+        raise ValueError("la cantidad debe ser positiva")
+    if cantidad &gt; stock[item]:
+        raise ValueError(f"stock insuficiente (hay {stock[item]})")
+    stock[item] -= cantidad                     # recién ahora se modifica
+    with open(ruta, "w", encoding="UTF-8") as f:
+        json.dump(stock, f, indent=4)
+    return stock[item]
+
+ventas = [("item1", 30), ("item9", 5), ("item2", 250), ("item3", -4), ("item3", 100)]
+for item, cant in ventas:
+    try:
+        queda = registrar_venta(RUTA, item, cant)
+        print(f"OK   {item} -{cant} -&gt; quedan {queda}")
+    except KeyError as e:
+        print(f"ERR  {item}: no existe el ítem {e}")
+    except ValueError as e:
+        print(f"ERR  {item}: {e}")
+
+with open(RUTA, encoding="UTF-8") as f:
+    print("Stock final:", json.load(f))</pre></div></div></details>
+</article></div>
+<h3 class="nivel-tit c-purple"><i class="fa-solid fa-crown"></i> Nivel Dios: sistemas completos sobre archivos</h3>
+<div class="ej-grid dios"><article class="ej n-dios" id="d1">
+  <div class="ej-head"><span class="ej-id">D1</span><h4>Mini sistema de productos con persistencia</h4><span class="badge b-dios"><i class="fa-solid fa-crown"></i> Nivel Dios</span></div>
+  <div class="ej-enun"><p>Construí un menú que trabaje directamente sobre <code>archivos/productos.json</code>, con las opciones: <b>1</b> listar, <b>2</b> alta (ID nuevo = mayor ID + 1, ojo: las claves son texto), <b>3</b> aumentar precios de una marca en un porcentaje, <b>4</b> baja por ID, <b>0</b> salir. Validá cada dato con <code>try/except</code> y guardá después de cada operación. Las entradas cargadas recorren todas las opciones, incluidos errores.</p></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+
+RUTA = &quot;archivos/productos.json&quot;
+
+def cargar():
+    pass
+
+def guardar(productos):
+    pass
+
+# completá las opciones del menú
+">import json
+
+RUTA = "archivos/productos.json"
+
+def cargar():
+    pass
+
+def guardar(productos):
+    pass
+
+# completá las opciones del menú
+</textarea><label class="ej-ent-lbl">Datos de entrada para <code>input()</code>, uno por línea<textarea class="ej-ent" rows="5" spellcheck="false">1
+2
+Yerba mate
+Paq. 1 kg
+Taragüí
+4500
+3
+quaker
+10
+4
+dos
+99
+4
+2
+1
+7
+0</textarea></label><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>Las claves del JSON son <code>"1"</code>, <code>"2"</code>…: para el ID nuevo, convertí a <code>int</code> para calcular el máximo y volvé a <code>str</code> para guardar: <code>str(max(int(k) for k in productos) + 1)</code>. Para la baja, <code>productos.pop(str(id), None)</code>.</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li>Dos funciones de acceso: <code>cargar()</code> y <code>guardar(productos)</code>. Todas las opciones las usan; nadie más abre el archivo.</li><li>Una función <code>leer_entero(msj)</code> con <code>while True</code> + <code>try</code> para opciones, IDs y precios.</li><li><b>Alta:</b> si no hay productos, el ID es <code>"1"</code>; si hay, <code>max(int(k)...) + 1</code> convertido a <code>str</code>.</li><li><b>Aumento por marca:</b> recorrer <code>items()</code>, comparar la marca sin mayúsculas y redondear con <code>round(precio * (1 + pct / 100))</code>. Si ninguna coincide, avisar.</li><li><b>Baja:</b> <code>pop(clave, None)</code> devuelve <code>None</code> si no existe, sin <code>KeyError</code>.</li><li>El bucle del menú es un <code>while True</code> que corta con la opción 0.</li></ol><div class="win"><pre class="py" data-title="python — solución D1" data-run="1" data-ent="1
+2
+Yerba mate
+Paq. 1 kg
+Taragüí
+4500
+3
+quaker
+10
+4
+dos
+99
+4
+2
+1
+7
+0">import json
+
+RUTA = "archivos/productos.json"
+
+def cargar():
+    try:
+        with open(RUTA, encoding="UTF-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def guardar(productos):
+    with open(RUTA, "w", encoding="UTF-8") as f:
+        json.dump(productos, f, ensure_ascii=False, indent=4)
+
+def leer_entero(msj):
+    while True:
+        try:
+            return int(input(msj))
+        except ValueError:
+            print("  Ingresá un número entero.")
+
+def listar(productos):
+    print(f'{"ID":&lt;4}{"Descripción":&lt;22}{"Marca":&lt;14}{"Precio":&gt;7}')
+    for k, p in productos.items():
+        print(f'{k:&lt;4}{p["Descripcion"]:&lt;22}{p["Marca"]:&lt;14}{p["Precio"]:&gt;7}')
+
+while True:
+    op = leer_entero("\nOpción (1 listar, 2 alta, 3 aumento, 4 baja, 0 salir): ")
+    if op == 0:
+        break
+    productos = cargar()                                   # 1) leer
+    if op == 1:
+        listar(productos)
+        continue
+    if op == 2:
+        nuevo = str(max(int(k) for k in productos) + 1) if productos else "1"
+        productos[nuevo] = {
+            "Descripcion": input("Descripción: ").strip(),
+            "Presentacion": input("Presentación: ").strip(),
+            "Marca": input("Marca: ").strip(),
+            "Precio": leer_entero("Precio: "),
+        }
+        print("Alta con ID", nuevo)
+    elif op == 3:
+        marca = input("Marca: ").strip().lower()
+        pct = leer_entero("Aumento %: ")
+        tocados = 0
+        for p in productos.values():                       # 2) modificar
+            if p["Marca"].lower() == marca:
+                p["Precio"] = round(p["Precio"] * (1 + pct / 100))
+                tocados += 1
+        print(f"Productos actualizados: {tocados}")
+    elif op == 4:
+        quitado = productos.pop(str(leer_entero("ID a eliminar: ")), None)
+        print("Eliminado:", quitado["Descripcion"] if quitado else "ese ID no existe")
+    else:
+        print("Opción inválida")
+        continue
+    guardar(productos)                                     # 3) sobrescribir
+
+print("Fin. Productos en el archivo:", len(cargar()))</pre></div></div></details>
+</article><article class="ej n-dios" id="d2">
+  <div class="ej-head"><span class="ej-id">D2</span><h4>Auditoría: ¿qué cambió entre el backup y hoy?</h4><span class="badge b-dios"><i class="fa-solid fa-crown"></i> Nivel Dios</span></div>
+  <div class="ej-enun"><p>Compará <code>archivos/empleados_backup.json</code> (copia de ayer) con <code>archivos/empleados_hoy.json</code> y generá <code>archivos/auditoria.json</code> con tres listas: <b>altas</b> (legajos nuevos), <b>bajas</b> (legajos que ya no están) y <b>modificaciones</b> (mismo legajo con algún campo distinto, indicando campo, valor anterior y nuevo). Mostrá un resumen en pantalla.</p></div><div class="salida-esp"><span>Salida esperada</span><pre>ALTA  567891 Segovia, Fernando
+BAJA  123456 Suárez, Esteban
+MODIF 567890 edad: 40 -&gt; 46</pre></div>
+  <div class="practica"><div class="practica-bar"><span><i class="fa-solid fa-keyboard"></i> Tu solución</span><span class="practica-btns"><button class="btn-sec js-reset" type="button">Restaurar</button><button class="btn-run js-run-ej" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button></span></div>
+  <textarea class="editor" spellcheck="false" data-start="import json
+">import json
+</textarea><pre class="consola" hidden></pre></div>
+  <details class="pista"><summary><i class="fa-regular fa-lightbulb"></i> Ver pista</summary><div><p>Convertí cada lista en un diccionario indexado por legajo: <code>{e["legajo"]: e for e in lista}</code>. Después, las altas y bajas son diferencias de <b>conjuntos</b> de claves (<code>-</code>), y las modificaciones salen de la intersección (<code>&amp;</code>).</p></div></details>
+  <details class="solucion"><summary><i class="fa-solid fa-key"></i> Ver solución explicada</summary><div><ol class="pasos"><li>Cargar los dos archivos.</li><li>Indexar por legajo: pasar de lista de diccionarios a diccionario de diccionarios. Buscar un legajo pasa de O(n) a O(1).</li><li><code>set(hoy) - set(antes)</code> son las altas; <code>set(antes) - set(hoy)</code>, las bajas.</li><li>Para cada legajo de <code>set(antes) &amp; set(hoy)</code>, comparar campo por campo y registrar <code>{"legajo", "campo", "antes", "ahora"}</code>.</li><li>Guardar el informe con <code>json.dump</code> y volver a leerlo para el resumen. Integra JSON, diccionarios, conjuntos y comprensiones.</li></ol><div class="win"><pre class="py" data-title="python — solución D2" data-run="1">import json
+
+def cargar(ruta):
+    with open(ruta, encoding="UTF-8") as f:
+        return json.load(f)
+
+antes = {e["legajo"]: e for e in cargar("archivos/empleados_backup.json")}
+hoy = {e["legajo"]: e for e in cargar("archivos/empleados_hoy.json")}
+
+altas = [hoy[l] for l in sorted(set(hoy) - set(antes))]
+bajas = [antes[l] for l in sorted(set(antes) - set(hoy))]
+modificaciones = []
+for l in sorted(set(antes) &amp; set(hoy)):
+    for campo in antes[l]:
+        if antes[l][campo] != hoy[l].get(campo):
+            modificaciones.append({"legajo": l, "campo": campo,
+                                   "antes": antes[l][campo], "ahora": hoy[l].get(campo)})
+
+informe = {"altas": altas, "bajas": bajas, "modificaciones": modificaciones}
+with open("archivos/auditoria.json", "w", encoding="UTF-8") as f:
+    json.dump(informe, f, ensure_ascii=False, indent=4)
+
+for e in altas:
+    print(f"ALTA  {e['legajo']} {e['apellido']}, {e['nombre']}")
+for e in bajas:
+    print(f"BAJA  {e['legajo']} {e['apellido']}, {e['nombre']}")
+for m in modificaciones:
+    print(f"MODIF {m['legajo']} {m['campo']}: {m['antes']} -&gt; {m['ahora']}")</pre></div></div></details>
+</article></div>
+</section>
+<section id="cierre" class="seccion">
+<header class="sec-head"><div class="sec-tit"><i class="fa-solid fa-circle-check"></i><h2>Cierre: repaso, tarea y material</h2><span class="sec-sub">| ¿Qué imprime? Respondé y verificá</span></div><div class="pills"><span class="pill"><i class="fa-regular fa-clock"></i> 5 min</span><span class="pill"><i class="fa-solid fa-graduation-cap"></i> Resumen</span></div></header>
+<div class="row2"><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-bolt c-blue"></i> ¿Qué imprime?</h3><div class="quiz"><div class="q" data-exp="dumps serializa: siempre devuelve un str."><div class="q-num">1</div><div class="q-body"><pre class="py q-code" data-run="0" data-bare="1">import json
+print(type(json.dumps({"a": 1})))</pre><div class="q-ops"><button class="q-op" type="button" data-ok="0">&lt;class 'dict'&gt;</button><button class="q-op" type="button" data-ok="1">&lt;class 'str'&gt;</button><button class="q-op" type="button" data-ok="0">&lt;class 'list'&gt;</button><button class="q-op" type="button" data-ok="0">Error</button></div><p class="q-fb" aria-live="polite"></p></div></div><div class="q" data-exp="true de JSON se convierte en True de Python."><div class="q-num">2</div><div class="q-body"><pre class="py q-code" data-run="0" data-bare="1">import json
+print(json.loads('{"activo": true}'))</pre><div class="q-ops"><button class="q-op" type="button" data-ok="0">{'activo': true}</button><button class="q-op" type="button" data-ok="1">{'activo': True}</button><button class="q-op" type="button" data-ok="0">{"activo": true}</button><button class="q-op" type="button" data-ok="0">Error</button></div><p class="q-fb" aria-live="polite"></p></div></div><div class="q" data-exp="JSON solo tiene claves de texto: la clave 1 vuelve como &quot;1&quot;."><div class="q-num">3</div><div class="q-body"><pre class="py q-code" data-run="0" data-bare="1">import json
+d = json.loads(json.dumps({1: "a"}))
+print(d)</pre><div class="q-ops"><button class="q-op" type="button" data-ok="0">{1: 'a'}</button><button class="q-op" type="button" data-ok="1">{'1': 'a'}</button><button class="q-op" type="button" data-ok="0">[1, 'a']</button><button class="q-op" type="button" data-ok="0">Error</button></div><p class="q-fb" aria-live="polite"></p></div></div><div class="q" data-exp="JSON exige comillas dobles: las simples no son válidas."><div class="q-num">4</div><div class="q-body"><pre class="py q-code" data-run="0" data-bare="1">import json
+json.loads("{'a': 1}")</pre><div class="q-ops"><button class="q-op" type="button" data-ok="0">{'a': 1}</button><button class="q-op" type="button" data-ok="1">JSONDecodeError</button><button class="q-op" type="button" data-ok="0">KeyError</button><button class="q-op" type="button" data-ok="0">None</button></div><p class="q-fb" aria-live="polite"></p></div></div><div class="q" data-exp="Las tuplas se serializan como arreglos."><div class="q-num">5</div><div class="q-body"><pre class="py q-code" data-run="0" data-bare="1">import json
+print(json.dumps((1, 2)))</pre><div class="q-ops"><button class="q-op" type="button" data-ok="0">(1, 2)</button><button class="q-op" type="button" data-ok="1">[1, 2]</button><button class="q-op" type="button" data-ok="0">TypeError</button><button class="q-op" type="button" data-ok="0">"(1, 2)"</button></div><p class="q-fb" aria-live="polite"></p></div></div><div class="q" data-exp="El modo &quot;w&quot; trunca el archivo en el momento de abrirlo: primero leé con &quot;r&quot;."><div class="q-num">6</div><div class="q-body"><pre class="py q-code" data-run="0" data-bare="1"># ¿Qué hace open("datos.json", "w")
+# con un archivo que ya tenía datos?</pre><div class="q-ops"><button class="q-op" type="button" data-ok="0">Lo lee</button><button class="q-op" type="button" data-ok="0">Agrega al final</button><button class="q-op" type="button" data-ok="1">Lo vacía al abrirlo</button><button class="q-op" type="button" data-ok="0">Da error</button></div><p class="q-fb" aria-live="polite"></p></div></div></div><p class="q-score" id="q-score">Respondidas: 0 de 6</p></div><div class="card"><h3 class="card-tit"><i class="fa-solid fa-book c-blue"></i> ¿Qué aprendimos hoy?</h3><div class="tiles t2"><div class="tile t-blue"><div class="tile-tit"><i class="fa-solid fa-check"></i> JSON</div><p>Texto estándar: objetos, arreglos, comillas dobles, <code>true/false/null</code>.</p></div><div class="tile t-green"><div class="tile-tit"><i class="fa-solid fa-check"></i> Cadenas</div><p><code>dumps()</code> serializa y <code>loads()</code> deserializa.</p></div><div class="tile t-orange"><div class="tile-tit"><i class="fa-solid fa-check"></i> Archivos</div><p><code>dump()</code> guarda y <code>load()</code> lee; siempre con <code>with</code> y UTF-8.</p></div><div class="tile t-purple"><div class="tile-tit"><i class="fa-solid fa-check"></i> CRUD</div><p>Leer → modificar en memoria → sobrescribir el archivo completo.</p></div></div></div></div><div class="col"><div class="card"><h3 class="card-tit"><i class="fa-solid fa-diagram-project c-blue"></i> Tarea para el Proyecto Final</h3><p><b>Objetivo:</b> reemplazar la información hardcodeada en memoria por almacenamiento persistente en archivos JSON.</p>
+<ol class="pasos"><li><b>Persistencia en JSON:</b> guardar en archivos la información que hoy vive en listas de diccionarios o diccionarios anidados.</li>
+<li><b>Manejo de excepciones</b> al abrir, leer o escribir: archivo inexistente, datos mal formateados, errores de escritura.</li>
+<li><b>Adaptación de funciones:</b> alta, baja, modificación y listado trabajan directamente sobre el archivo.</li>
+<li><b>Archivos auxiliares</b> (si aplica) para categorías, configuraciones o usuarios.</li>
+<li><b>Sin datos hardcodeados:</b> el sistema debe funcionar solo con los archivos JSON.</li></ol>
+<p class="muted">Atajo: las funciones <code>cargar_json</code> y <code>guardar_json</code> del ejercicio A1 cubren los puntos 1 y 2.</p></div><div class="card"><h3 class="card-tit"><i class="fa-solid fa-clipboard-check c-blue"></i> Checklist antes de entregar</h3><ul class="lista-ok"><li>¿Todos los <code>open()</code> están en un <code>with</code> y con <code>encoding="UTF-8"</code>?</li>
+<li>¿Guardo con <code>ensure_ascii=False, indent=4</code>?</li><li>¿Capturo <code>FileNotFoundError</code> y <code>json.JSONDecodeError</code>?</li>
+<li>¿Valido antes de sobrescribir el archivo?</li><li>¿Uso <code>str()</code> al buscar claves numéricas?</li></ul></div><div class="card"><h3 class="card-tit"><i class="fa-solid fa-link c-blue"></i> Material complementario y lectura</h3><ul class="lista-ok"><li><a href="https://docs.python.org/3/library/json.html" target="_blank" rel="noopener">Documentación oficial del módulo json</a></li>
+<li><a href="https://realpython.com/python-json/" target="_blank" rel="noopener">Real Python: Working With JSON Data in Python</a></li>
+<li><a href="https://www.w3schools.com/python/python_json.asp" target="_blank" rel="noopener">W3Schools: Python JSON</a></li>
+<li><a href="https://www.geeksforgeeks.org/python-json/" target="_blank" rel="noopener">GeeksforGeeks: Python JSON</a></li>
+<li>Bibliografía obligatoria de la materia.</li>
+<li>Marzal Varó, A.; Gracia Luengo, I.; García Sevilla, P. <i>Introducción a la programación con Python 3</i>. <a href="https://core.ac.uk/download/pdf/61441326.pdf" target="_blank" rel="noopener">Disponible bajo licencia Creative Commons</a>.</li>
+<li><a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener">The Python Tutorial</a> y <a href="https://www.w3schools.com/python/" target="_blank" rel="noopener">Python Tutorial de w3schools</a>.</li></ul></div><aside class="docente"><div class="docente-tit"><i class="fa-solid fa-chalkboard-user"></i> Nota para el docente</div><p>Usá el “¿Qué imprime?” como ticket de salida. Si fallan la 3 o la 6, retomalas al inicio de la próxima clase: son los dos errores que más aparecen en las entregas del proyecto.</p></aside></div></div>
+</section>
+<footer class="pie"><span><i class="fa-solid fa-graduation-cap"></i> Programación I, Algoritmos y estructuras de datos I, UADE.</span><span class="firma">Mg. Lic. Santiago Mendoza.</span></footer>
+</main>
+</div>
+<button class="lanzador" id="lanzador" type="button" aria-expanded="false" aria-controls="cajon"><i class="fa-solid fa-terminal"></i> Consola Python</button>
+<div class="cajon" id="cajon" role="dialog" aria-label="Consola Python">
+  <div class="cab"><strong><i class="fa-solid fa-terminal c-green"></i> Consola Python</strong><button class="btn-mini" id="cerrarCajon" type="button">Cerrar</button></div>
+  <div id="consolaLibre"></div>
+  <details class="caj-arch"><summary><i class="fa-solid fa-folder-open"></i> Archivos (carpeta archivos/)</summary><div class="explorador" data-explorador></div></details>
+</div>
+<script>
+(function(){
+const FS0={"archivos/empleados.json": "[\n    {\n        \"legajo\": 123456,\n        \"nombre\": \"Esteban\",\n        \"apellido\": \"Suárez\",\n        \"edad\": 25,\n        \"activo\": true\n    },\n    {\n        \"legajo\": 567890,\n        \"nombre\": \"Analía\",\n        \"apellido\": \"Martínez\",\n        \"edad\": 40,\n        \"activo\": false\n    }\n]\n", "archivos/empleados_backup.json": "[\n    {\n        \"legajo\": 123456,\n        \"nombre\": \"Esteban\",\n        \"apellido\": \"Suárez\",\n        \"edad\": 25,\n        \"activo\": true\n    },\n    {\n        \"legajo\": 567890,\n        \"nombre\": \"Analía\",\n        \"apellido\": \"Martínez\",\n        \"edad\": 40,\n        \"activo\": false\n    }\n]\n", "archivos/empleados_hoy.json": "[\n    {\n        \"legajo\": 567890,\n        \"nombre\": \"Analía\",\n        \"apellido\": \"Martínez\",\n        \"edad\": 46,\n        \"activo\": false\n    },\n    {\n        \"legajo\": 567891,\n        \"nombre\": \"Fernando\",\n        \"apellido\": \"Segovia\",\n        \"edad\": 32,\n        \"activo\": true\n    }\n]\n", "archivos/paises.json": "[\n    {\n        \"id\": 1,\n        \"nombre\": \"Argentina\"\n    },\n    {\n        \"id\": 2,\n        \"nombre\": \"Brasil\"\n    },\n    {\n        \"id\": 3,\n        \"nombre\": \"Uruguay\"\n    },\n    {\n        \"id\": 4,\n        \"nombre\": \"Paraguay\"\n    }\n]\n", "archivos/persona.json": "{\n    \"legajo\": 123456,\n    \"nombre\": \"Esteban\",\n    \"apellido\": \"Suárez\",\n    \"edad\": 25,\n    \"activo\": true\n}\n", "archivos/productos.json": "{\n    \"1\": {\n        \"Descripcion\": \"Arroz largo fino\",\n        \"Presentacion\": \"Paq. 1 kg\",\n        \"Marca\": \"Molinos Ala\",\n        \"Precio\": 1900\n    },\n    \"2\": {\n        \"Descripcion\": \"Fideos tirabuzón\",\n        \"Presentacion\": \"Paq. 500 g\",\n        \"Marca\": \"Don Vicente\",\n        \"Precio\": 1600\n    },\n    \"3\": {\n        \"Descripcion\": \"Lentejas secas\",\n        \"Presentacion\": \"Paq. 500 g\",\n        \"Marca\": \"Lucchetti\",\n        \"Precio\": 2100\n    },\n    \"4\": {\n        \"Descripcion\": \"Harina de trigo 000\",\n        \"Presentacion\": \"Paq. 1 kg\",\n        \"Marca\": \"Blancaflor\",\n        \"Precio\": 1800\n    },\n    \"5\": {\n        \"Descripcion\": \"Polenta\",\n        \"Presentacion\": \"Paq. 500 g\",\n        \"Marca\": \"Quaker\",\n        \"Precio\": 1500\n    }\n}\n", "archivos/stock.json": "{\n    \"item1\": 100,\n    \"item2\": 200,\n    \"item3\": 300\n}\n", "archivos/users.json": "[\n    {\n        \"id\": 1,\n        \"name\": \"Leanne Graham\",\n        \"username\": \"Bret\",\n        \"email\": \"Sincere@april.biz\",\n        \"address\": {\n            \"street\": \"Kulas Light\",\n            \"suite\": \"Apt. 556\",\n            \"city\": \"Gwenborough\",\n            \"zipcode\": \"92998-3874\",\n            \"geo\": {\n                \"lat\": \"-37.3159\",\n                \"lng\": \"81.1496\"\n            }\n        },\n        \"phone\": \"1-770-736-8031 x56442\",\n        \"website\": \"hildegard.org\",\n        \"company\": {\n            \"name\": \"Romaguera-Crona\",\n            \"catchPhrase\": \"Multi-layered client-server neural-net\",\n            \"bs\": \"harness real-time e-markets\"\n        }\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Ervin Howell\",\n        \"username\": \"Antonette\",\n        \"email\": \"Shanna@melissa.tv\",\n        \"address\": {\n            \"street\": \"Victor Plains\",\n            \"suite\": \"Suite 879\",\n            \"city\": \"Wisokyburgh\",\n            \"zipcode\": \"90566-7771\",\n            \"geo\": {\n                \"lat\": \"-43.9509\",\n                \"lng\": \"-34.4618\"\n            }\n        },\n        \"phone\": \"010-692-6593 x09125\",\n        \"website\": \"anastasia.net\",\n        \"company\": {\n            \"name\": \"Deckow-Crist\",\n            \"catchPhrase\": \"Proactive didactic contingency\",\n            \"bs\": \"synergize scalable supply-chains\"\n        }\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Clementine Bauch\",\n        \"username\": \"Samantha\",\n        \"email\": \"Nathan@yesenia.net\",\n        \"address\": {\n            \"street\": \"Douglas Extension\",\n            \"suite\": \"Suite 847\",\n            \"city\": \"McKenziehaven\",\n            \"zipcode\": \"59590-4157\",\n            \"geo\": {\n                \"lat\": \"-68.6102\",\n                \"lng\": \"-47.0653\"\n            }\n        },\n        \"phone\": \"1-463-123-4447\",\n        \"website\": \"ramiro.info\",\n        \"company\": {\n            \"name\": \"Romaguera-Jacobson\",\n            \"catchPhrase\": \"Face to face bifurcated interface\",\n            \"bs\": \"e-enable strategic applications\"\n        }\n    },\n    {\n        \"id\": 4,\n        \"name\": \"Patricia Lebsack\",\n        \"username\": \"Karianne\",\n        \"email\": \"Julianne.OConner@kory.org\",\n        \"address\": {\n            \"street\": \"Hoeger Mall\",\n            \"suite\": \"Apt. 692\",\n            \"city\": \"South Elvis\",\n            \"zipcode\": \"53919-4257\",\n            \"geo\": {\n                \"lat\": \"29.4572\",\n                \"lng\": \"-164.2990\"\n            }\n        },\n        \"phone\": \"493-170-9623 x156\",\n        \"website\": \"kale.biz\",\n        \"company\": {\n            \"name\": \"Robel-Corkery\",\n            \"catchPhrase\": \"Multi-tiered zero tolerance productivity\",\n            \"bs\": \"transition cutting-edge web services\"\n        }\n    },\n    {\n        \"id\": 5,\n        \"name\": \"Chelsey Dietrich\",\n        \"username\": \"Kamren\",\n        \"email\": \"Lucio_Hettinger@annie.ca\",\n        \"address\": {\n            \"street\": \"Skiles Walks\",\n            \"suite\": \"Suite 351\",\n            \"city\": \"Roscoeview\",\n            \"zipcode\": \"33263\",\n            \"geo\": {\n                \"lat\": \"-31.8129\",\n                \"lng\": \"62.5342\"\n            }\n        },\n        \"phone\": \"(254)954-1289\",\n        \"website\": \"demarco.info\",\n        \"company\": {\n            \"name\": \"Keebler LLC\",\n            \"catchPhrase\": \"User-centric fault-tolerant solution\",\n            \"bs\": \"revolutionize end-to-end systems\"\n        }\n    },\n    {\n        \"id\": 6,\n        \"name\": \"Mrs. Dennis Schulist\",\n        \"username\": \"Leopoldo_Corkery\",\n        \"email\": \"Karley_Dach@jasper.info\",\n        \"address\": {\n            \"street\": \"Norberto Crossing\",\n            \"suite\": \"Apt. 950\",\n            \"city\": \"South Christy\",\n            \"zipcode\": \"23505-1337\",\n            \"geo\": {\n                \"lat\": \"-71.4197\",\n                \"lng\": \"71.7478\"\n            }\n        },\n        \"phone\": \"1-477-935-8478 x6430\",\n        \"website\": \"ola.org\",\n        \"company\": {\n            \"name\": \"Considine-Lockman\",\n            \"catchPhrase\": \"Synchronised bottom-line interface\",\n            \"bs\": \"e-enable innovative applications\"\n        }\n    },\n    {\n        \"id\": 7,\n        \"name\": \"Kurtis Weissnat\",\n        \"username\": \"Elwyn.Skiles\",\n        \"email\": \"Telly.Hoeger@billy.biz\",\n        \"address\": {\n            \"street\": \"Rex Trail\",\n            \"suite\": \"Suite 280\",\n            \"city\": \"Howemouth\",\n            \"zipcode\": \"58804-1099\",\n            \"geo\": {\n                \"lat\": \"24.8918\",\n                \"lng\": \"21.8984\"\n            }\n        },\n        \"phone\": \"210.067.6132\",\n        \"website\": \"elvis.io\",\n        \"company\": {\n            \"name\": \"Johns Group\",\n            \"catchPhrase\": \"Configurable multimedia task-force\",\n            \"bs\": \"generate enterprise e-tailers\"\n        }\n    },\n    {\n        \"id\": 8,\n        \"name\": \"Nicholas Runolfsdottir V\",\n        \"username\": \"Maxime_Nienow\",\n        \"email\": \"Sherwood@rosamond.me\",\n        \"address\": {\n            \"street\": \"Ellsworth Summit\",\n            \"suite\": \"Suite 729\",\n            \"city\": \"Aliyaview\",\n            \"zipcode\": \"45169\",\n            \"geo\": {\n                \"lat\": \"-14.3990\",\n                \"lng\": \"-120.7677\"\n            }\n        },\n        \"phone\": \"586.493.6943 x140\",\n        \"website\": \"jacynthe.com\",\n        \"company\": {\n            \"name\": \"Abernathy Group\",\n            \"catchPhrase\": \"Implemented secondary concept\",\n            \"bs\": \"e-enable extensible e-tailers\"\n        }\n    },\n    {\n        \"id\": 9,\n        \"name\": \"Glenna Reichert\",\n        \"username\": \"Delphine\",\n        \"email\": \"Chaim_McDermott@dana.io\",\n        \"address\": {\n            \"street\": \"Dayna Park\",\n            \"suite\": \"Suite 449\",\n            \"city\": \"Bartholomebury\",\n            \"zipcode\": \"76495-3109\",\n            \"geo\": {\n                \"lat\": \"24.6463\",\n                \"lng\": \"-168.8889\"\n            }\n        },\n        \"phone\": \"(775)976-6794 x41206\",\n        \"website\": \"conrad.com\",\n        \"company\": {\n            \"name\": \"Yost and Sons\",\n            \"catchPhrase\": \"Switchable contextually-based project\",\n            \"bs\": \"aggregate real-time technologies\"\n        }\n    },\n    {\n        \"id\": 10,\n        \"name\": \"Clementina DuBuque\",\n        \"username\": \"Moriah.Stanton\",\n        \"email\": \"Rey.Padberg@karina.biz\",\n        \"address\": {\n            \"street\": \"Kattie Turnpike\",\n            \"suite\": \"Suite 198\",\n            \"city\": \"Lebsackbury\",\n            \"zipcode\": \"31428-2261\",\n            \"geo\": {\n                \"lat\": \"-38.2386\",\n                \"lng\": \"57.2232\"\n            }\n        },\n        \"phone\": \"024-648-3804\",\n        \"website\": \"ambrose.net\",\n        \"company\": {\n            \"name\": \"Hoeger LLC\",\n            \"catchPhrase\": \"Centralized empowering task-force\",\n            \"bs\": \"target end-to-end models\"\n        }\n    }\n]\n", "archivos/roto.json": "{\n    \"tema\": \"oscuro\",\n    \"idioma\": \"es\",\n}\n"};
+let FS={};
+function cargar(){FS=JSON.parse(JSON.stringify(FS0));}
+cargar();
+const avisar=()=>{clearTimeout(window.__fsT);window.__fsT=setTimeout(()=>document.dispatchEvent(new CustomEvent("fs-cambio")),30);};
+window.fsExiste=p=>Object.prototype.hasOwnProperty.call(FS,p);
+window.fsLeer=p=>FS[p];
+window.fsEscribir=(p,c)=>{FS[p]=c;avisar();};
+window.fsLista=()=>Object.keys(FS).sort();
+window.fsOriginal=p=>Object.prototype.hasOwnProperty.call(FS0,p)?FS0[p]:null;
+window.fsRestaurar=()=>{cargar();avisar();};
+})();
+</script>
+<script type="text/python">
+from browser import window
+import sys
+import json
+
+class _DecoJSON:
+    def __init__(self, s):
+        self.s = s
+        self.i = 0
+    def err(self, msg, pos=None):
+        if pos is None:
+            pos = self.i
+        raise json.JSONDecodeError(msg, self.s, pos)
+    def ws(self):
+        while self.i < len(self.s) and self.s[self.i] in " \t\n\r":
+            self.i += 1
+    def valor(self):
+        self.ws()
+        if self.i >= len(self.s):
+            self.err("Expecting value")
+        c = self.s[self.i]
+        if c == "{":
+            return self.objeto()
+        if c == "[":
+            return self.arreglo()
+        if c == '"':
+            return self.cadena()
+        for lit, v in (("true", True), ("false", False), ("null", None)):
+            if self.s.startswith(lit, self.i):
+                self.i += len(lit)
+                return v
+        return self.numero()
+    def numero(self):
+        j = self.i
+        if j < len(self.s) and self.s[j] == "-":
+            j += 1
+        k = j
+        while j < len(self.s) and self.s[j].isdigit():
+            j += 1
+        if j == k:
+            self.err("Expecting value")
+        es_float = False
+        if j < len(self.s) and self.s[j] == ".":
+            es_float = True
+            j += 1
+            while j < len(self.s) and self.s[j].isdigit():
+                j += 1
+        if j < len(self.s) and self.s[j] in "eE":
+            es_float = True
+            j += 1
+            if j < len(self.s) and self.s[j] in "+-":
+                j += 1
+            while j < len(self.s) and self.s[j].isdigit():
+                j += 1
+        txt = self.s[self.i:j]
+        self.i = j
+        return float(txt) if es_float else int(txt)
+    def cadena(self):
+        self.i += 1
+        partes = []
+        esc = {'"': '"', "\\": "\\", "/": "/", "b": "\b", "f": "\f", "n": "\n", "r": "\r", "t": "\t"}
+        inicio = self.i - 1
+        while True:
+            if self.i >= len(self.s):
+                self.err("Unterminated string starting at", inicio)
+            c = self.s[self.i]
+            if c == '"':
+                self.i += 1
+                return "".join(partes)
+            if c == "\\":
+                n = self.s[self.i + 1:self.i + 2]
+                if n == "u":
+                    partes.append(chr(int(self.s[self.i + 2:self.i + 6], 16)))
+                    self.i += 6
+                    continue
+                if n not in esc:
+                    self.err("Invalid \\escape")
+                partes.append(esc[n])
+                self.i += 2
+                continue
+            if c == "\n":
+                self.err("Invalid control character at")
+            partes.append(c)
+            self.i += 1
+    def objeto(self):
+        self.i += 1
+        d = {}
+        self.ws()
+        if self.s[self.i:self.i + 1] == "}":
+            self.i += 1
+            return d
+        while True:
+            self.ws()
+            if self.s[self.i:self.i + 1] != '"':
+                self.err("Expecting property name enclosed in double quotes")
+            k = self.cadena()
+            self.ws()
+            if self.s[self.i:self.i + 1] != ":":
+                self.err("Expecting ':' delimiter")
+            self.i += 1
+            d[k] = self.valor()
+            self.ws()
+            c = self.s[self.i:self.i + 1]
+            if c == "}":
+                self.i += 1
+                return d
+            if c != ",":
+                self.err("Expecting ',' delimiter")
+            coma = self.i
+            self.i += 1
+            self.ws()
+            if self.s[self.i:self.i + 1] == "}":
+                self.err("Illegal trailing comma before end of object", coma)
+    def arreglo(self):
+        self.i += 1
+        l = []
+        self.ws()
+        if self.s[self.i:self.i + 1] == "]":
+            self.i += 1
+            return l
+        while True:
+            l.append(self.valor())
+            self.ws()
+            c = self.s[self.i:self.i + 1]
+            if c == "]":
+                self.i += 1
+                return l
+            if c != ",":
+                self.err("Expecting ',' delimiter")
+            coma = self.i
+            self.i += 1
+            self.ws()
+            if self.s[self.i:self.i + 1] == "]":
+                self.err("Illegal trailing comma before end of array", coma)
+
+def _loads(s, **kw):
+    if not isinstance(s, (str, bytes, bytearray)):
+        raise TypeError("the JSON object must be str, bytes or bytearray, not " + type(s).__name__)
+    if not isinstance(s, str):
+        s = s.decode("utf-8")
+    p = _DecoJSON(s)
+    v = p.valor()
+    p.ws()
+    if p.i < len(s):
+        p.err("Extra data")
+    return v
+
+def _load(fp, **kw):
+    return _loads(fp.read(), **kw)
+
+json.loads = _loads
+json.load = _load
+
+class _Archivo:
+    def __init__(self, ruta, modo="r", encoding=None, newline=None, **kw):
+        self.ruta = str(ruta).replace("\\", "/")
+        while self.ruta.startswith("./"):
+            self.ruta = self.ruta[2:]
+        self.modo = str(modo)
+        self.cerrado = False
+        if "r" in self.modo and "+" not in self.modo:
+            if not window.fsExiste(self.ruta):
+                raise FileNotFoundError("[Errno 2] No such file or directory: '" + self.ruta + "'")
+            self.buf = str(window.fsLeer(self.ruta))
+        elif "a" in self.modo:
+            self.buf = str(window.fsLeer(self.ruta)) if window.fsExiste(self.ruta) else ""
+            window.fsEscribir(self.ruta, self.buf)
+        elif "x" in self.modo:
+            if window.fsExiste(self.ruta):
+                raise FileExistsError("[Errno 17] File exists: '" + self.ruta + "'")
+            self.buf = ""
+            window.fsEscribir(self.ruta, "")
+        else:
+            self.buf = ""
+            window.fsEscribir(self.ruta, "")
+        self.pos = 0
+    def _chk(self, leer):
+        if self.cerrado:
+            raise ValueError("I/O operation on closed file.")
+        if leer and "r" not in self.modo and "+" not in self.modo:
+            raise OSError("not readable")
+        if not leer and "r" in self.modo and "+" not in self.modo:
+            raise OSError("not writable")
+    def read(self, n=-1):
+        self._chk(True)
+        if n is None or n < 0:
+            r = self.buf[self.pos:]
+        else:
+            r = self.buf[self.pos:self.pos + n]
+        self.pos += len(r)
+        return r
+    def readline(self):
+        self._chk(True)
+        i = self.buf.find("\n", self.pos)
+        fin = len(self.buf) if i < 0 else i + 1
+        r = self.buf[self.pos:fin]
+        self.pos = fin
+        return r
+    def readlines(self):
+        res = []
+        while True:
+            l = self.readline()
+            if not l:
+                break
+            res.append(l)
+        return res
+    def __iter__(self):
+        return iter(self.readlines())
+    def write(self, s):
+        self._chk(False)
+        s = str(s)
+        self.buf += s
+        window.fsEscribir(self.ruta, self.buf)
+        return len(s)
+    def close(self):
+        self.cerrado = True
+    @property
+    def closed(self):
+        return self.cerrado
+    def __enter__(self):
+        return self
+    def __exit__(self, *a):
+        self.close()
+        return False
+
+
+class _Salida:
+    def __init__(self):
+        self.partes = []
+    def write(self, s):
+        self.partes.append(str(s))
+    def flush(self):
+        pass
+
+def _ejecutar(codigo):
+    out = _Salida()
+    viejo_out, viejo_err = sys.stdout, sys.stderr
+    sys.stdout = out
+    sys.stderr = out
+    error = ""
+    linea = 0
+    try:
+        exec(codigo, {"__name__": "__main__", "open": _Archivo})
+    except BaseException as e:
+        error = type(e).__name__ + ": " + str(e)
+        try:
+            if isinstance(e, SyntaxError) and e.lineno:
+                linea = e.lineno
+            else:
+                tb = e.__traceback__
+                while tb is not None:
+                    if tb.tb_frame.f_code.co_filename in ("<string>", "exec"):
+                        linea = tb.tb_lineno
+                    tb = tb.tb_next
+        except Exception:
+            linea = 0
+    finally:
+        sys.stdout, sys.stderr = viejo_out, viejo_err
+    return [''.join(out.partes), error, linea]
+
+window.pyRun = _ejecutar
+
+class _Limite(BaseException):
+    pass
+
+def _linea_codigo(e):
+    try:
+        tb = e.__traceback__
+        ln = 0
+        while tb is not None:
+            if tb.tb_frame.f_code.co_filename == '<codigo>':
+                ln = tb.tb_lineno
+            tb = tb.tb_next
+        return ln
+    except Exception:
+        return 0
+
+def _consola(src, entradas):
+    out = []
+    feed = [str(x) for x in entradas]
+    cont = [0]
+    def _print(*args, sep=' ', end='\n', **kw):
+        cont[0] += 1
+        if cont[0] > 3000:
+            raise _Limite("El programa imprimió demasiadas líneas. ¿Hay un bucle infinito?")
+        out.append(str(sep).join(str(a) for a in args) + str(end))
+    def _input(prompt=''):
+        out.append(str(prompt))
+        if not feed:
+            raise _Limite("El programa pidió un dato más de los disponibles. Agregá líneas en «Datos de entrada».")
+        v = feed.pop(0)
+        out.append(v + '\n')
+        return v
+    ns = {'print': _print, 'input': _input, '__name__': '__main__', 'open': _Archivo}
+    tipo = ''
+    err = ''
+    linea = 0
+    try:
+        exec(compile(src, '<codigo>', 'exec'), ns)
+    except _Limite as e:
+        tipo = 'Límite'
+        err = str(e)
+    except SyntaxError as e:
+        tipo = type(e).__name__
+        err = str(getattr(e, 'msg', e))
+        linea = getattr(e, 'lineno', 0) or 0
+    except BaseException as e:
+        tipo = type(e).__name__
+        err = str(e)
+        linea = _linea_codigo(e)
+    return [''.join(out), tipo, err, linea]
+
+window.pyConsola = _consola
+
+def _lab_json(texto):
+    try:
+        v = json.loads(texto)
+        return [1, repr(v), type(v).__name__]
+    except json.JSONDecodeError as e:
+        return [0, "JSONDecodeError: " + str(e), str(e.pos)]
+    except BaseException as e:
+        return [0, type(e).__name__ + ": " + str(e), "0"]
+
+window.pyJsonLab = _lab_json
+</script>
+<script>
+(function(){
+const KW=/\b(def|return|if|elif|else|for|while|in|not|and|or|is|import|from|as|with|break|continue|pass|None|True|False|del|try|except|lambda|global)\b/;
+const BI=/\b(print|len|range|list|sorted|sum|max|min|type|id|enumerate|str|int|float|input|open|round|set|copy)\b/;
+const RE=/(#[^\n]*)|(f?"(?:[^"\\\n]|\\.)*"|f?'(?:[^'\\\n]|\\.)*')|(^[ \t]*[A-Za-z_]\w*(?=[ \t]*(?:[+\-*\/]?=)(?!=)))|(\.[A-Za-z_]\w*(?=\())|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)\b/gm;
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function hl(src){
+  let out="",last=0,m;RE.lastIndex=0;
+  while((m=RE.exec(src))){
+    out+=esc(src.slice(last,m.index));last=RE.lastIndex;
+    if(m[1])out+=`<span class="tok-c">${esc(m[1])}</span>`;
+    else if(m[2])out+=`<span class="tok-s">${esc(m[2])}</span>`;
+    else if(m[3]){const ws=m[3].match(/^[ \t]*/)[0];const id=m[3].slice(ws.length);
+      out+=ws+(KW.test(id)?`<span class="tok-k">${id}</span>`:`<span class="tok-v">${id}</span>`);}
+    else if(m[4])out+=`.<span class="tok-m">${esc(m[4].slice(1))}</span>`;
+    else if(m[5])out+=`<span class="tok-n">${m[5]}</span>`;
+    else if(m[6]){const w=m[6];out+=KW.test(w)&&w.match(KW)[0]===w?`<span class="tok-k">${w}</span>`:(BI.test(w)&&w.match(BI)[0]===w?`<span class="tok-b">${w}</span>`:w);}
+    if(m[0].length===0)RE.lastIndex++;
+  }
+  return out+esc(src.slice(last));
+}
+
+/* ---- Python runtime (Brython) ---- */
+let pyListo=false;const espera=[];
+function marcarListo(){pyListo=true;const e=document.getElementById("py-estado");if(e){e.classList.add("listo");e.querySelector("span:last-child").textContent="Python listo para ejecutar";}
+  document.querySelectorAll("[data-espera]").forEach(b=>{b.disabled=false;b.removeAttribute("data-espera");});espera.splice(0).forEach(f=>f());}
+window.__pyListo=marcarListo;
+function correr(src,cb,ents){const go=()=>{const r=window.pyConsola(src,ents||[]);
+  const err=r[1]?(r[1]==="Límite"?r[2]:r[1]+(r[2]?": "+r[2]:"")):"";cb([r[0],err,r[3]]);};
+  if(pyListo&&window.pyConsola)go();else espera.push(go);}
+
+const AYUDAS=[
+ [/FileNotFoundError|No such file/i,"El archivo no existe en esa ruta. Revisá el nombre y la carpeta archivos/ en el explorador."],
+ [/Illegal trailing comma/i,"Hay una coma de más antes de } o ]. JSON no permite comas al final."],
+ [/double quotes/i,"JSON exige comillas dobles en claves y textos: \"nombre\", nunca 'nombre'."],
+ [/Expecting value/i,"Falta un valor donde se esperaba uno: ¿el archivo está vacío, o escribiste True/None de Python en lugar de true/null?"],
+ [/JSONDecodeError|Extra data|Expecting/i,"El texto no es JSON válido. Revisá comillas, comas y que haya un único valor raíz."],
+ [/not JSON serializable/i,"JSON no soporta ese tipo (por ejemplo, set). Convertilo con list() o sorted() antes de guardarlo."],
+ [/string indices must be integers/i,"Estás accediendo por clave a una cadena: deserializala primero con json.loads()."],
+ [/KeyError/i,"La clave no existe. En JSON las claves son texto: usá d[\"1\"] y no d[1], o protegé con get()."],
+ [/closed file/i,"Usaste el archivo después de cerrarlo: trabajá adentro del bloque with."],
+ [/not readable|not writable/i,"El modo de open() no corresponde: \"r\" para leer, \"w\" para escribir."],
+ [/index out of range/i,"Accediste a una posición que no existe. Imprimí len() de la lista leída del archivo."],
+ [/NameError/i,"Usaste un nombre que no existe todavía: revisá cómo lo escribiste y que esté definido antes de usarlo."],
+ [/IndentationError|SyntaxError/i,"Error de sintaxis: revisá los dos puntos (:) al final de if/for/def/with, los paréntesis y la sangría."]
+];
+function entsDe(pre){return pre.dataset.ent?pre.dataset.ent.split("\n"):[];}
+function pintarSalida(pre,res){
+  pre.hidden=false;pre.innerHTML="";
+  let [out,err,linea]=res&&res.length?[res[0],res[1],res[2]]:["","",0];
+  if(out)pre.append(document.createTextNode(out));
+  if(err){const s=document.createElement("span");s.className="err";s.textContent=(linea?`Línea ${linea} → `:"")+err;pre.append(s);
+    const a=AYUDAS.find(([r])=>r.test(err));if(a){const h=document.createElement("span");h.className="ayuda";h.textContent="💡 "+a[1];pre.append(h);}}
+  if(!out&&!err){const s=document.createElement("span");s.className="meta";s.textContent="(el programa no imprimió nada)";pre.append(s);}
+}
+
+/* ---- code windows ---- */
+document.querySelectorAll("pre.py").forEach(pre=>{
+  const src=pre.textContent;pre.innerHTML=hl(src);
+  if(pre.dataset.bare)return;
+  const win=pre.parentElement,bar=document.createElement("div");bar.className="win-bar";
+  bar.innerHTML=`<span class="d"></span><span class="d"></span><span class="d"></span><span class="titulo"></span>`;
+  bar.querySelector(".titulo").textContent=pre.dataset.title||"python";
+  const copiar=document.createElement("button");copiar.textContent="Copiar";copiar.type="button";
+  copiar.onclick=()=>{const t=win.querySelector("textarea");const txt=t?t.value:src;
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{copiar.textContent="Copiado";setTimeout(()=>copiar.textContent="Copiar",1200)}).catch(()=>{copiar.textContent="No se pudo copiar"});};
+  bar.append(copiar);
+  if(pre.dataset.run==="1"){
+    const ed=document.createElement("button");ed.textContent="Editar";ed.type="button";
+    const run=document.createElement("button");run.className="run";run.type="button";run.innerHTML='<i class="fa-solid fa-play"></i> Ejecutar';
+    const salida=document.createElement("pre");salida.className="consola";salida.hidden=true;
+    ed.onclick=()=>{let t=win.querySelector("textarea");
+      if(t){pre.innerHTML=hl(t.value);t.replaceWith(pre);ed.textContent="Editar";}
+      else{t=document.createElement("textarea");t.spellcheck=false;t.value=pre.dataset.cur||src;t.rows=Math.min(24,src.split("\n").length+1);t.setAttribute("aria-label","Editor de código");pre.replaceWith(t);t.focus();ed.textContent="Ver resaltado";
+        t.addEventListener("input",()=>pre.dataset.cur=t.value);t.addEventListener("keydown",tabular);}
+    };
+    run.onclick=()=>{const t=win.querySelector("textarea");const code=t?t.value:(pre.dataset.cur||src);
+      run.disabled=true;run.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando';
+      setTimeout(()=>correr(code,r=>{pintarSalida(salida,r);run.disabled=false;run.innerHTML='<i class="fa-solid fa-play"></i> Ejecutar';},entsDe(pre)),30);};
+    if(pre.dataset.ent){const nt=document.createElement("div");nt.className="ent-nota";nt.innerHTML='<i class="fa-solid fa-keyboard"></i> Datos de entrada: <code></code>';nt.querySelector("code").textContent=entsDe(pre).join(" · ");win.append(nt);}
+    bar.append(ed,run);win.append(salida);
+  }
+  win.prepend(bar);
+});
+function tabular(e){if(e.key==="Tab"&&!e.shiftKey){e.preventDefault();const t=e.target,s=t.selectionStart;t.setRangeText("    ",s,t.selectionEnd,"end");}}
+
+/* ---- exercise editors ---- */
+document.querySelectorAll(".practica").forEach(p=>{
+  const ta=p.querySelector("textarea"),out=p.querySelector(".consola"),key="ej:"+p.closest(".ej").id;
+  try{const g=localStorage.getItem(key);if(g)ta.value=g;}catch(e){}
+  ta.addEventListener("keydown",tabular);
+  ta.addEventListener("input",()=>{try{localStorage.setItem(key,ta.value)}catch(e){}});
+  p.querySelector(".js-reset").onclick=()=>{ta.value=ta.dataset.start;try{localStorage.removeItem(key)}catch(e){};out.hidden=true;};
+  const run=p.querySelector(".js-run-ej");
+  const entTa=p.querySelector(".ej-ent");
+  run.onclick=()=>{run.disabled=true;setTimeout(()=>correr(ta.value,r=>{pintarSalida(out,r);run.disabled=false;},entTa&&entTa.value?entTa.value.replace(/\n$/,"").split("\n"):[]),30);};
+});
+
+/* ---- alias simulator ---- */
+const al=document.getElementById("alias");
+if(al){let modo="alias",a=[1,2,3],b=a,ult=null;const mem=al.querySelector(".alias-mem"),msg=al.querySelector(".alias-msg");
+  const caja=(arr,etqs,id)=>`<div class="obj"><div class="etqs">${etqs.map(e=>`<span class="etq">${e}</span>`).join("")}</div><div class="caja">${arr.map((v,i)=>`<span class="${v===99&&i===arr.length-1&&ult?"nuevo":""}">${v}</span>`).join("")}</div><small>id: ${id}</small></div>`;
+  function render(){
+    if(a===b)mem.innerHTML=caja(a,["a","b"],"140321");
+    else mem.innerHTML=caja(a,["a"],"140321")+caja(b,["b"],"140877");
+    if(!ult)msg.innerHTML=modo==="alias"?"<b>b = a</b>: hay <b>un solo objeto</b> con dos etiquetas. <code>a is b</code> → True.":"<b>b = a.copy()</b>: hay <b>dos objetos</b> distintos con el mismo contenido. <code>a is b</code> → False.";
+    else msg.innerHTML=modo==="alias"?`Después de <code>b.append(99)</code>: <code>print(a)</code> → <b>[${a.join(", ")}]</b>. ¡Cambió a, aunque nunca la tocamos!`:`Después de <code>b.append(99)</code>: <code>print(a)</code> → <b>[${a.join(", ")}]</b>. a quedó intacta.`;
+  }
+  function reset(){a=[1,2,3];b=modo==="alias"?a:a.slice();ult=null;render();}
+  al.querySelectorAll("[data-modo]").forEach(btn=>btn.onclick=()=>{modo=btn.dataset.modo;al.querySelectorAll("[data-modo]").forEach(x=>x.classList.toggle("on",x===btn));reset();});
+  al.querySelector('[data-acc="append"]').onclick=()=>{b.push(99);ult=true;render();};
+  al.querySelector('[data-acc="reset"]').onclick=reset;reset();}
+
+/* ---- slicer ---- */
+const sl=document.getElementById("slicer");
+if(sl){const L=[10,20,30,40,50,60],n=L.length;const ini=sl.querySelector("#s-ini"),fin=sl.querySelector("#s-fin"),paso=sl.querySelector("#s-paso");
+  const cel=sl.querySelector(".slicer-celdas"),res=sl.querySelector(".slicer-res");
+  const num=v=>{v=v.trim();if(v==="")return null;if(!/^-?\d+$/.test(v))return NaN;return parseInt(v,10);};
+  function idx(st,sp,sv){ // CPython slice.indices
+    const step=sv===null?1:sv;const lo=step>0?0:-1,hi=step>0?n:n-1;
+    const fix=(v,d)=>{if(v===null)return d;if(v<0){v+=n;if(v<lo)v=lo;}else if(v>hi)v=hi;return v;};
+    const s=fix(st,step>0?lo:hi),e=fix(sp,step>0?hi:lo);const out=[];
+    if(step>0)for(let i=s;i<e;i+=step)out.push(i);else for(let i=s;i>e;i+=step)out.push(i);return out;}
+  function render(){const s=num(ini.value),e=num(fin.value),p=num(paso.value);
+    let elegidos=[],error="";
+    if([s,e,p].some(Number.isNaN))error="Solo números enteros (o vacío).";else if(p===0)error="ValueError: slice step cannot be zero";else elegidos=idx(s,e,p);
+    cel.innerHTML=L.map((v,i)=>{const o=elegidos.indexOf(i);return `<div class="celda ${o>=0?"sel":""}">${o>=0?`<span class="ord">${o+1}</span>`:""}<b>${v}</b><small>${i}</small><small style="color:var(--red)">${i-n}</small></div>`}).join("");
+    const expr=`numeros[${ini.value.trim()}:${fin.value.trim()}${paso.value.trim()!==""?":"+paso.value.trim():""}]`;
+    res.innerHTML=error?`<span class="err">${error}</span>`:`${expr} → [${elegidos.map(i=>L[i]).join(", ")}]`;}
+  [ini,fin,paso].forEach(x=>x.addEventListener("input",render));
+  sl.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const [x,y,z]=b.dataset.p.split(",");ini.value=x;fin.value=y;paso.value=z;render();});
+  ini.value="1";fin.value="4";render();}
+
+/* ---- consola flotante (modelo Clase 9) ---- */
+const EXPLICA={
+  FileNotFoundError:"El archivo no existe en esa ruta. Revisá el nombre, la carpeta (<code>archivos/</code>) y la extensión. Abrí el explorador de archivos para ver los disponibles.",
+  JSONDecodeError:"El texto no es JSON válido. Revisá comillas dobles, comas sobrantes al final, <code>true</code>/<code>false</code>/<code>null</code> en minúscula y que el archivo no esté vacío. La posición indicada (línea y columna) marca dónde se detuvo la lectura.",
+  ValueError:"Si dice <i>I/O operation on closed file</i>, usaste el archivo después de cerrarlo (por ejemplo, fuera del bloque <code>with</code>). También aparece con <code>int(\"abc\")</code>.",
+  TypeError:"Dos casos típicos: intentar serializar algo que JSON no soporta (<i>Object of type set is not JSON serializable</i>: convertilo con <code>list()</code>) o acceder por clave a una cadena sin deserializarla (<i>string indices must be integers</i>: usá <code>json.loads()</code>).",
+  KeyError:"Esa clave no existe. Recordá que en un JSON las claves siempre son texto: <code>productos[\"1\"]</code>, no <code>productos[1]</code>. Protegé con <code>in</code> o <code>get()</code>.",
+  OSError:"Error de entrada/salida. Si dice <i>not readable</i> o <i>not writable</i>, el modo de <code>open()</code> no corresponde: <code>\"r\"</code> para leer, <code>\"w\"</code> para escribir.",
+  FileExistsError:"El modo <code>\"x\"</code> crea un archivo nuevo y falla si ya existe.",
+  IndexError:"Se accedió a una posición que no existe en una lista. Si la lista vino de un JSON, imprimí <code>len()</code> antes de indexar.",
+  NameError:"Se usó una variable o función que no está definida: revisá cómo la escribiste y que esté asignada antes.",
+  UnboundLocalError:"Se usó una variable local antes de asignarle un valor dentro de la función.",
+  AttributeError:"Ese dato no tiene el método pedido. ¿Es un <code>dict</code> o una <code>list</code>? Imprimí <code>type()</code> de lo que devolvió <code>json.load()</code>.",
+  ZeroDivisionError:"Se dividió por cero: seguramente <code>len()</code> de una lista vacía leída del archivo. Agregá un guardián.",
+  SyntaxError:"El código no respeta la sintaxis de Python. Revisá paréntesis, corchetes y comillas sin cerrar, y los dos puntos (<code>:</code>) al final de <code>if</code>, <code>for</code>, <code>while</code>, <code>def</code>, <code>try</code> y <code>with</code>.",
+  IndentationError:"La sangría no es coherente. Usá 4 espacios por nivel; el código dentro de <code>with</code> va un nivel más adentro.",
+  ImportError:"Esta consola corre en el navegador: sólo puede importar módulos estándar como <code>json</code>. Probá ese código en tu Python local.",
+  ModuleNotFoundError:"Esta consola corre en el navegador: sólo puede importar módulos estándar como <code>json</code>. Probá ese código en tu Python local.",
+  "Límite":"La consola cortó la ejecución para que no se cuelgue."
+};
+function correrConsola(src,ents){const r=window.pyConsola(src,ents);return {salida:r[0],tipo:r[1],error:r[2],linea:r[3]};}
+function pintarConsola(host,r,ed){
+  host.innerHTML="";const term=document.createElement("div");term.className="terminal";
+  let t=r.salida?esc(r.salida):"";
+  if(r.tipo){if(t&&!t.endsWith("\n"))t+="\n";
+    t+='<span class="rojo">'+(r.tipo==="Límite"?esc(r.error):(r.linea?"Error en la línea "+r.linea+"\n":"")+esc(r.tipo)+(r.error?": "+esc(r.error):""))+"</span>";}
+  if(!t)t='<span class="tenue">(el programa no mostró nada)</span>';
+  term.innerHTML=t;host.appendChild(term);
+  if(r.tipo){const ex=document.createElement("div");ex.className="explica";
+    ex.innerHTML="<strong>"+esc(r.tipo==="Límite"?"Ejecución detenida":r.tipo)+".</strong> "+(EXPLICA[r.tipo]||"Error de ejecución.");host.appendChild(ex);
+    if(ed&&r.linea)ed.marcar(r.linea);}
+}
+function crearEditor(host,codigo,alEjecutar){
+  host.classList.add("ed");
+  host.innerHTML='<div class="gutter" aria-hidden="true"></div><div class="area"><pre class="capa" aria-hidden="true"><code></code></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Editor de código Python"></textarea></div>';
+  const ta=host.querySelector("textarea"),capa=host.querySelector(".capa"),cod=host.querySelector("code"),gut=host.querySelector(".gutter");
+  ta.value=codigo;let marcada=0;
+  function sync(){cod.innerHTML=hl(ta.value)+"\n";const n=ta.value.split("\n").length;let g="";
+    for(let i=1;i<=n;i++)g+="<span"+(i===marcada?' class="err"':"")+">"+i+"</span>";gut.innerHTML=g;
+    ta.style.height="auto";ta.style.height=(ta.scrollHeight+2)+"px";capa.scrollLeft=ta.scrollLeft;}
+  function insertar(txt){ta.focus();let ok=false;try{ok=document.execCommand("insertText",false,txt);}catch(e){}
+    if(!ok){ta.setRangeText(txt,ta.selectionStart,ta.selectionEnd,"end");marcada=0;sync();}}
+  ta.addEventListener("input",()=>{marcada=0;sync();});
+  ta.addEventListener("scroll",()=>{capa.scrollLeft=ta.scrollLeft;});
+  ta.addEventListener("keydown",ev=>{
+    if(ev.key==="Enter"&&(ev.ctrlKey||ev.metaKey)){ev.preventDefault();alEjecutar&&alEjecutar();return;}
+    const v=ta.value,s0=ta.selectionStart,e0=ta.selectionEnd,ini=v.lastIndexOf("\n",s0-1)+1;
+    if(ev.key==="Tab"){ev.preventDefault();
+      if(ev.shiftKey||s0!==e0){const bIdx=v.indexOf("\n",e0-(e0>s0&&v[e0-1]==="\n"?1:0));const b=bIdx===-1?v.length:bIdx;
+        const nuevo=v.slice(ini,b).split("\n").map(l=>ev.shiftKey?l.replace(/^ {1,4}/,""):"    "+l).join("\n");
+        ta.setSelectionRange(ini,b);insertar(nuevo);ta.setSelectionRange(ini,ini+nuevo.length);}
+      else insertar("    ");return;}
+    if(ev.key==="Enter"){ev.preventDefault();const linea=v.slice(ini,s0);let ind=(linea.match(/^ */)||[""])[0];
+      if(/:\s*(#.*)?$/.test(linea))ind+="    ";insertar("\n"+ind);return;}
+    if(ev.key==="Backspace"&&s0===e0&&s0>ini){const antes=v.slice(ini,s0);
+      if(/^ +$/.test(antes)&&antes.length%4===0){ev.preventDefault();ta.setSelectionRange(s0-4,s0);insertar("");}}
+  });
+  sync();
+  return {get:()=>ta.value,set:v=>{ta.value=v;marcada=0;sync();},marcar:n=>{marcada=n;sync();},foco:()=>ta.focus()};
+}
+function crearEntradas(host,valores,id){
+  const w=document.createElement("div");w.className="entradas";
+  w.innerHTML='<label for="ent-'+id+'">Datos de entrada para <code>input()</code>, uno por línea</label><textarea id="ent-'+id+'" spellcheck="false"></textarea>';
+  const t=w.querySelector("textarea");const fijar=vs=>{t.value=vs.join("\n");t.rows=Math.max(1,Math.min(5,vs.length||1));};fijar(valores);host.appendChild(w);
+  return {get:()=>t.value===""?[]:t.value.replace(/\n$/,"").split("\n"),set:fijar};
+}
+function crearConsola(host,codigo,entradas,id){
+  const edHost=document.createElement("div");host.appendChild(edHost);let ejecutar;
+  const ed=crearEditor(edHost,codigo,()=>ejecutar());const ent=crearEntradas(host,entradas,id);
+  const barra=document.createElement("div");barra.className="barra-acc";
+  barra.innerHTML='<button class="btn-c" type="button"><i class="fa-solid fa-play"></i> Ejecutar</button><button class="btn-c sec" type="button">Restaurar</button><span class="atajo">Ctrl + Enter ejecuta</span>';
+  host.appendChild(barra);
+  const sal=document.createElement("div");sal.className="consola-salida";sal.setAttribute("aria-live","polite");host.appendChild(sal);
+  const [bEj,bRe]=barra.querySelectorAll("button");let original={codigo,entradas};
+  ejecutar=()=>{const go=()=>pintarConsola(sal,correrConsola(ed.get(),ent.get()),ed);
+    if(pyListo&&window.pyConsola)go();else{sal.innerHTML='<div class="terminal"><span class="tenue">Preparando Python… se ejecuta al terminar.</span></div>';espera.push(go);}};
+  bEj.addEventListener("click",ejecutar);
+  bRe.addEventListener("click",()=>{ed.set(original.codigo);ent.set(original.entradas);sal.innerHTML="";});
+  return {cargar(c,e){original={codigo:c,entradas:e};ed.set(c);ent.set(e);sal.innerHTML="";},ejecutar,foco:ed.foco};
+}
+const cajon=document.getElementById("cajon"),lanzador=document.getElementById("lanzador");
+const libre=crearConsola(document.getElementById("consolaLibre"),
+ '# Escribí código Python y ejecutalo\nimport json\n\nwith open("archivos/paises.json", encoding="UTF-8") as f:\n    paises = json.load(f)\n\nnombre = input("Buscar país: ").strip().lower()\nfor p in paises:\n    if p["nombre"].lower() == nombre:\n        print("Encontrado:", p)\n        break\nelse:\n    print("No está en el archivo")\n',["Uruguay"],"libre");
+function abrirCajon(){cajon.classList.add("abierto");lanzador.style.display="none";lanzador.setAttribute("aria-expanded","true");}
+function cerrarCajon(){cajon.classList.remove("abierto");lanzador.style.display="";lanzador.setAttribute("aria-expanded","false");lanzador.focus();}
+lanzador.addEventListener("click",()=>{abrirCajon();libre.foco();});
+document.getElementById("cerrarCajon").addEventListener("click",cerrarCajon);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&cajon.classList.contains("abierto"))cerrarCajon();});
+function probarEnConsola(codigo,entradas){libre.cargar(codigo,entradas||[]);abrirCajon();libre.ejecutar();}
+document.querySelectorAll(".win").forEach(win=>{const pre=win.querySelector("pre.py");
+  if(!pre||pre.dataset.run!=="1")return;
+  const b=document.createElement("button");b.type="button";b.className="btn-mini btn-probar";b.innerHTML='<i class="fa-solid fa-terminal"></i> Probar en la consola';
+  b.addEventListener("click",()=>{const t=win.querySelector("textarea");probarEnConsola(t?t.value:(pre.dataset.cur||pre.textContent),entsDe(pre));});
+  win.insertAdjacentElement("afterend",b);});
+
+/* ---- explorador de matriz ---- */
+const mx=document.getElementById("mexp");
+if(mx){const M=[[1,2,3,4],[5,6,7,8],[9,10,11,12]];let vista="celda",ci=2,cj=1;const g=mx.querySelector(".mexp-grid"),r=mx.querySelector(".mexp-res");
+  function render(){let h='<span></span>'+M[0].map((_,j)=>`<span class="hdr">col ${j}</span>`).join("");
+    M.forEach((fila,i)=>{h+=`<span class="hdr">fila ${i}</span>`+fila.map((v,j)=>{let c="";
+      if(vista==="celda"&&i===ci&&j===cj)c="sel";else if(vista==="fila"&&i===ci)c=j===cj?"sel":"hl";else if(vista==="col"&&j===cj)c=i===ci?"sel":"hl";else if(vista==="diag"&&i===j)c="hl";
+      return `<button type="button" class="${c}" data-i="${i}" data-j="${j}" aria-label="fila ${i}, columna ${j}, valor ${v}">${v}</button>`}).join("")});
+    g.innerHTML=h;
+    if(vista==="celda")r.innerHTML=`matriz[${ci}][${cj}] → <b>${M[ci][cj]}</b>`;
+    else if(vista==="fila")r.innerHTML=`matriz[${ci}] → <b>[${M[ci].join(", ")}]</b>`;
+    else if(vista==="col")r.innerHTML=`columna ${cj}: [fila[${cj}] for fila in matriz] → <b>[${M.map(f=>f[cj]).join(", ")}]</b>`;
+    else r.innerHTML=`i == j → <b>[${[0,1,2].map(i=>M[i][i]).join(", ")}]</b><br><span style="font-family:inherit;color:var(--muted)">3x4 no es cuadrada: la “diagonal” solo toca 3 celdas</span>`;}
+  g.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;ci=+b.dataset.i;cj=+b.dataset.j;render();});
+  mx.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{vista=b.dataset.v;mx.querySelectorAll("[data-v]").forEach(x=>x.classList.toggle("on",x===b));render();});
+  render();}
+
+/* ---- aliasing de matrices ---- */
+const ma=document.getElementById("malias");
+if(ma){let modo="mal",hecho=false;const mem=ma.querySelector(".malias-mem"),msg=ma.querySelector(".alias-msg");
+  function render(){const ids=modo==="mal"?["7001","7001","7001"]:["7001","7002","7003"];
+    let filas="";for(let i=0;i<3;i++){const cambia=hecho&&(modo==="mal"||i===0);
+      filas+=`<div class="mrow"><span class="etq">M[${i}]</span><div class="caja"><span class="${cambia?"cambio":""}">${cambia?5:0}</span><span>0</span><span>0</span></div><small>id ${ids[i]}</small></div>`;}
+    mem.innerHTML=`<div class="mrows">${filas}</div>`;
+    if(!hecho)msg.innerHTML=modo==="mal"?"Las tres filas tienen el <b>mismo id</b>: son una sola lista con tres nombres.":"Cada fila tiene <b>su propio id</b>: <code>[0] * 3</code> se evaluó tres veces.";
+    else msg.innerHTML=modo==="mal"?"<code>M[0][0] = 5</code> cambió <b>las tres filas</b>, porque son la misma.":"<code>M[0][0] = 5</code> cambió <b>solo la fila 0</b>.";}
+  ma.querySelectorAll("[data-modo]").forEach(b=>b.onclick=()=>{modo=b.dataset.modo;hecho=false;ma.querySelectorAll("[data-modo]").forEach(x=>x.classList.toggle("on",x===b));render();});
+  ma.querySelector('[data-acc="set"]').onclick=()=>{hecho=true;render();};
+  ma.querySelector('[data-acc="reset"]').onclick=()=>{hecho=false;render();};render();}
+/* ---- simulador de tabla hash ---- */
+const hs=document.getElementById("hashsim");
+if(hs){const N=8;const base={"manzana":1200,"pera":1500,"banana":900,"kiwi":2100,"uva":1800};let tabla;
+  const hsh=k=>{let h=0;for(const c of k)h=(h*31+c.codePointAt(0))%1000003;return h;};
+  const inp=hs.querySelector("#hs-clave"),box=hs.querySelector(".hs-tabla"),msg=hs.querySelector(".hs-msg");
+  function reset(){tabla=Array.from({length:N},()=>[]);Object.entries(base).forEach(([k,v])=>tabla[hsh(k)%N].push([k,v]));render(-1,"");msg.textContent="Tabla con 5 frutas. Probá buscar una que esté y otra que no.";}
+  function render(i,cls){box.innerHTML=tabla.map((c,j)=>`<div class="hs-cas ${j===i?cls:""}"><small>casillero ${j}</small>${c.map(([k,v])=>`<span>"${k}": ${v}</span>`).join("")||'<span style="color:var(--muted)">vacío</span>'}</div>`).join("");}
+  function accion(tipo){const k=inp.value.trim().toLowerCase();if(!k){msg.textContent="Escribí una clave.";return;}
+    const h=hsh(k),i=h%N,esta=tabla[i].find(p=>p[0]===k);
+    if(tipo==="agregar"){if(esta){msg.innerHTML=`"${k}" ya existe: asignar de nuevo solo <b>reemplaza</b> su valor (las claves son únicas).`;render(i,"hit");return;}
+      tabla[i].push([k,0]);render(i,"hit");msg.innerHTML=`hash("${k}") % ${N} = <b>${i}</b> → se guarda en el casillero ${i}.`;return;}
+    render(i,esta?"hit":"miss");
+    msg.innerHTML=`hash("${k}") % ${N} = <b>${i}</b> → se revisa <b>solo</b> el casillero ${i}: ${esta?`encontrada, valor ${esta[1]}.`:"no está (sin recorrer los demás)."} Una lista habría comparado hasta ${tabla.flat().length} elementos.`;}
+  hs.querySelector('[data-hs="buscar"]').onclick=()=>accion("buscar");
+  hs.querySelector('[data-hs="agregar"]').onclick=()=>accion("agregar");
+  hs.querySelector('[data-hs="reset"]').onclick=reset;
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();accion("buscar");}});reset();}
+
+/* ---- diagrama de Venn ---- */
+const vn=document.getElementById("venn");
+if(vn){const A=["Ana","Luis","Sofía","Tomás"],B=["Juli","Luis","Tomás","Valen"];
+  const OPS={"|":{a:1,b:1,i:1,e:"python | datos",r:[...new Set([...A,...B])]},"&":{a:0,b:0,i:1,e:"python & datos",r:A.filter(x=>B.includes(x))},
+    "-":{a:1,b:0,i:0,e:"python - datos",r:A.filter(x=>!B.includes(x))},"r":{a:0,b:1,i:0,e:"datos - python",r:B.filter(x=>!A.includes(x))},
+    "^":{a:1,b:1,i:0,e:"python ^ datos",r:[...A.filter(x=>!B.includes(x)),...B.filter(x=>!A.includes(x))]}};
+  const rA=vn.querySelector(".rA"),rB=vn.querySelector(".rB"),rI=vn.querySelector(".rI"),res=vn.querySelector(".venn-res");
+  function render(op){const o=OPS[op];rA.setAttribute("class","rA"+(o.a?" on":""));rB.setAttribute("class","rB"+(o.b?" on":""));
+    rI.setAttribute("class","rI"+(o.i?" on":((o.a||o.b)?" tapa":"")));
+    if(o.i&&!(o.a||o.b))rI.setAttribute("class","rI on");
+    res.innerHTML=`sorted(${o.e.replace("&","&amp;")}) → <b>[${o.r.sort((x,y)=>x.localeCompare(y)).map(x=>"'"+x+"'").join(", ")}]</b>`;}
+  vn.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{vn.querySelectorAll("[data-op]").forEach(x=>x.classList.toggle("on",x===b));render(b.dataset.op);});
+  render("|");}
+
+/* ---- explorador de archivos ---- */
+function crearExplorador(host){
+  let abierto=host.dataset.abrir||"";
+  const ul=document.createElement("div");ul.className="ex-lista";const ver=document.createElement("div");ver.className="ex-ver";
+  host.append(ul,ver);
+  function tam(t){const n=new Blob([t]).size;return n<1024?n+" B":(n/1024).toFixed(1)+" KB";}
+  function render(){const ls=window.fsLista();
+    ul.innerHTML=ls.map(p=>{const o=window.fsOriginal(p),c=window.fsLeer(p);const est=o===null?"nuevo":(o===c?"":"modificado");
+      return `<button type="button" class="ex-arch ${p===abierto?"on":""}" data-p="${p}"><i class="fa-regular fa-file-lines"></i><span>${p.replace("archivos/","")}</span>${est?`<em class="ex-${est}">${est}</em>`:""}<small>${tam(c)}</small></button>`;}).join("");
+    if(abierto&&window.fsExiste(abierto)){const c=window.fsLeer(abierto);
+      ver.innerHTML=`<div class="ex-cab"><code>${abierto}</code><button type="button" class="btn-mini" data-cerrar>Cerrar</button></div><pre class="ex-txt"></pre>`;
+      ver.querySelector(".ex-txt").textContent=c===""?"(archivo vacío)":c;ver.querySelector("[data-cerrar]").onclick=()=>{abierto="";render();};}
+    else ver.innerHTML="";}
+  ul.addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;abierto=abierto===b.dataset.p?"":b.dataset.p;render();});
+  document.addEventListener("fs-cambio",render);render();
+}
+document.querySelectorAll("[data-explorador]").forEach(crearExplorador);
+document.querySelectorAll("[data-restaurar]").forEach(b=>b.onclick=()=>{window.fsRestaurar();b.innerHTML='<i class="fa-solid fa-check"></i> Archivos restaurados';setTimeout(()=>b.innerHTML='<i class="fa-solid fa-rotate-left"></i> Restaurar archivos',1500);});
+
+/* ---- laboratorio JSON ---- */
+const lab=document.getElementById("lab");
+if(lab){const inp=lab.querySelector("#lab-in"),res=lab.querySelector("#lab-res");let tm=null;
+  function marca(txt,pos){if(pos<0||isNaN(pos))return esc(txt);return esc(txt.slice(0,pos))+'<mark>'+esc(txt.slice(pos,pos+1)||" ")+'</mark>'+esc(txt.slice(pos+1));}
+  function evaluar(){const t=inp.value;
+    if(!(pyListo&&window.pyJsonLab)){res.innerHTML='<div class="lab-espera">Preparando Python…</div>';espera.push(evaluar);return;}
+    const r=window.pyJsonLab(t);
+    if(r[0])res.innerHTML=`<div class="lab-ok"><b>✔ JSON válido.</b> <code>json.loads()</code> devuelve un <b>${esc(r[2])}</b>:</div><pre class="lab-py"></pre>`,res.querySelector(".lab-py").textContent=r[1];
+    else{res.innerHTML=`<div class="lab-mal"><b>✘ ${esc(r[1])}</b></div><pre class="lab-txt">${marca(t,parseInt(r[2],10))}</pre>`;}}
+  inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(evaluar,250);});
+  lab.querySelectorAll("[data-lab]").forEach(b=>b.onclick=()=>{lab.querySelectorAll("[data-lab]").forEach(x=>x.classList.toggle("on",x===b));inp.value=b.dataset.lab;evaluar();});
+  inp.value=lab.querySelector("[data-lab]").dataset.lab;evaluar();}
+
+/* ---- quiz ---- */
+let resp=0;const total=document.querySelectorAll(".q").length;
+document.querySelectorAll(".q").forEach(q=>{const fb=q.querySelector(".q-fb");
+  q.querySelectorAll(".q-op").forEach(b=>b.onclick=()=>{if(q.dataset.done)return;q.dataset.done=1;resp++;
+    const ok=b.dataset.ok==="1";b.classList.add(ok?"ok":"no");q.querySelector('[data-ok="1"]').classList.add("ok");
+    fb.textContent=(ok?"✔ Correcto. ":"✘ No. ")+q.dataset.exp;q.dataset.bien=ok?1:0;
+    const bien=document.querySelectorAll('.q[data-bien="1"]').length;
+    document.getElementById("q-score").textContent=`Respondidas: ${resp} de ${total} | Correctas: ${bien}`;});});
+
+/* ---- teacher mode ---- */
+const sw=document.getElementById("modo-docente");
+function aplicarModo(on){document.body.classList.toggle("alumno",!on);sw.checked=on;document.getElementById("modo-lbl").textContent=on?"Vista docente":"Vista alumno";}
+let docente=true;try{const g=localStorage.getItem("modo-docente");if(g!==null)docente=g==="1";}catch(e){}
+aplicarModo(docente);sw.onchange=()=>{aplicarModo(sw.checked);try{localStorage.setItem("modo-docente",sw.checked?"1":"0")}catch(e){}};
+
+/* ---- class timer ---- */
+const AG=[["apertura","Apertura",5],["m1","Módulo 1",20],["m2","Módulo 2",25],["pausa","Pausa",10],["m3","Módulo 3",25],["m4","Módulo 4",25],["m5","Módulo 5",35],["cierre","Cierre",5]];
+const ul=document.getElementById("agenda");let acc=0;
+ul.innerHTML=AG.map(([id,t,m])=>{const d=acc;acc+=m;const f=x=>`${Math.floor(x/60)}:${String(x%60).padStart(2,"0")}`;return `<li><a href="#${id}" data-ini="${d}" data-fin="${acc}"><span>${t}</span><span>${f(d)}–${f(acc)}</span></a></li>`}).join("");
+let seg=0,tick=null;const reloj=document.getElementById("reloj"),barra=document.getElementById("barra"),bt=document.getElementById("t-play");
+function pintar(){const m=Math.floor(seg/60),s=seg%60;reloj.innerHTML=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")} <small>/ 150:00</small>`;
+  barra.style.width=Math.min(100,seg/90)+"%";const min=seg/60;
+  ul.querySelectorAll("a").forEach(a=>{const i=+a.dataset.ini,f=+a.dataset.fin;a.classList.toggle("activo",seg>0&&min>=i&&min<f);a.classList.toggle("hecho",min>=f);});}
+bt.onclick=()=>{if(tick){clearInterval(tick);tick=null;bt.innerHTML='<i class="fa-solid fa-play"></i> Seguir';}else{tick=setInterval(()=>{seg++;pintar();},1000);bt.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';}};
+document.getElementById("t-reset").onclick=()=>{clearInterval(tick);tick=null;seg=0;bt.innerHTML='<i class="fa-solid fa-play"></i> Iniciar';pintar();};
+pintar();
+
+window.addEventListener("load",()=>{setTimeout(()=>{if(!window.pyRun&&window.brython){try{brython({debug:0})}catch(e){}}
+  const chk=setInterval(()=>{if(window.pyRun){clearInterval(chk);marcarListo();}},150);},50);});
+})();
+</script>
+</body>
+</html>
+</body></html>
